@@ -1,0 +1,7 @@
+.idea
+dist
+node_modules
+.development.env
+.production.env
+gallery-server.iml
+package-lock.json
