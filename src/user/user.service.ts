@@ -1,9 +1,10 @@
 import {Injectable} from '@nestjs/common';
 import {UserModel} from "./model/user.model";
 import {InjectModel} from "@nestjs/sequelize";
-import {UserCreateDto} from "./dto/user.create.dto";
 import {UserUpdateDto} from "./dto/user.update.dto";
-import {UserPasswordDto} from "./dto/user.password.dto";
+import {UserUpdatePasswordDto} from "./dto/user.update.password.dto";
+import {UserSignUpDto} from "./dto/user.sign.up.dto";
+import {UserPublicDto} from "./dto/user.public.dto";
 
 @Injectable()
 export class UserService {
@@ -13,9 +14,9 @@ export class UserService {
         private userModel: typeof UserModel
     ) {}
 
-    async create(userCreateDto: UserCreateDto): Promise<UserModel> {
-        const user = await this.userModel.create(userCreateDto)
-        return await this.findOne(user.id)
+    async signUp(userSignUpDto: UserSignUpDto): Promise<UserPublicDto> {
+        const user = await this.userModel.create(userSignUpDto)
+        return new UserPublicDto(user)
     }
 
     async findAll(): Promise<UserModel[]> {
@@ -31,7 +32,7 @@ export class UserService {
         return await this.findOne(id)
     }
 
-    async updatePassword(id: string, userPasswordDto: UserPasswordDto): Promise<UserModel> {
+    async updatePassword(id: string, userPasswordDto: UserUpdatePasswordDto): Promise<UserModel> {
         await this.userModel.update(userPasswordDto, {where: {id}})
         return await this.findOne(id)
     }

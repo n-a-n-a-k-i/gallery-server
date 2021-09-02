@@ -13,17 +13,17 @@ import {UserModel} from "./user/model/user.model";
         }),
         SequelizeModule.forRoot({
             dialect: 'postgres',
-            host: process.env.POSTGRES_HOST,
-            port: Number(process.env.POSTGRES_PORT),
-            username: process.env.POSTGRES_USER,
-            password: process.env.POSTGRES_PASSWORD,
-            database: process.env.POSTGRES_DB,
+            host: process.env.POSTGRES_HOST || 'localhost',
+            port: Number(process.env.POSTGRES_PORT) || 5432,
+            username: process.env.POSTGRES_USER || 'gallery',
+            password: process.env.POSTGRES_PASSWORD || 'gallery',
+            database: process.env.POSTGRES_DB || 'gallery',
             models: [
                 UserModel
             ],
             autoLoadModels: true,
             define: {
-                schema: process.env.POSTGRES_SCHEMA
+                schema: process.env.POSTGRES_SCHEMA || 'gallery'
             }
         }),
         UserModule
