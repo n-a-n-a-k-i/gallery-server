@@ -11,10 +11,10 @@ export class UserController {
 
     constructor(private userService: UserService) {}
 
-    @ApiOperation({summary: 'Создание пользователя'})
+    @ApiOperation({summary: 'Региистрация пользователя'})
     @ApiResponse({type: UserPublicDto})
-    @Post()
-    create(@Body() userSignUpDto: UserSignUpDto) {
+    @Post('/signup')
+    create(@Body() userSignUpDto: UserSignUpDto): Promise<UserPublicDto> {
         return this.userService.signUp(userSignUpDto)
     }
 

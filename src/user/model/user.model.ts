@@ -2,14 +2,14 @@ import {Column, Model, Table} from "sequelize-typescript";
 import {BOOLEAN, literal, TEXT, UUID} from "sequelize";
 import {ApiProperty} from "@nestjs/swagger";
 
-interface UserModelCreation {
+interface UserModelSignUp {
     username: string
     password: string
     email: string
 }
 
 @Table({tableName: 'user'})
-export class UserModel extends Model<UserModel, UserModelCreation> {
+export class UserModel extends Model<UserModel, UserModelSignUp> {
 
     @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
     @Column({comment: 'Идентификатор', type: UUID, defaultValue: literal('gen_random_uuid()'), allowNull: false, unique: true, primaryKey: true})
