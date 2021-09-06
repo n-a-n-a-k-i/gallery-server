@@ -8,9 +8,7 @@ import {UserModel} from "./user/model/user.model";
     controllers: [],
     providers: [],
     imports: [
-        ConfigModule.forRoot({
-            envFilePath: `.${process.env.NODE_ENV}.env`
-        }),
+        ConfigModule.forRoot(),
         SequelizeModule.forRoot({
             dialect: 'postgres',
             host: process.env.POSTGRES_HOST || 'localhost',
@@ -21,10 +19,7 @@ import {UserModel} from "./user/model/user.model";
             models: [
                 UserModel
             ],
-            autoLoadModels: true,
-            define: {
-                schema: process.env.POSTGRES_SCHEMA || 'gallery'
-            }
+            autoLoadModels: true
         }),
         UserModule
     ]

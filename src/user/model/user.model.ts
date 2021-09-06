@@ -1,15 +1,18 @@
 import {Column, Model, Table} from "sequelize-typescript";
-import {BOOLEAN, literal, TEXT, UUID} from "sequelize";
+import {literal, TEXT, UUID} from "sequelize";
 import {ApiProperty} from "@nestjs/swagger";
 
-interface UserModelSignUp {
+interface UserModelCreate {
     username: string
     password: string
-    email: string
+    cloudUsername: string
+    cloudPassword: string
+    cloudDirScan: string
+    cloudDirSync: string
 }
 
 @Table({tableName: 'user'})
-export class UserModel extends Model<UserModel, UserModelSignUp> {
+export class UserModel extends Model<UserModel, UserModelCreate> {
 
     @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
     @Column({comment: 'Идентификатор', type: UUID, defaultValue: literal('gen_random_uuid()'), allowNull: false, unique: true, primaryKey: true})
@@ -23,16 +26,20 @@ export class UserModel extends Model<UserModel, UserModelSignUp> {
     @Column({comment: 'Пароль', type: TEXT, allowNull: false})
     password: string
 
-    @ApiProperty({description: 'Электронная почта', example: 'user@gallery.nanaki'})
-    @Column({comment: 'Электронная почта', type: TEXT, allowNull: false, unique: true})
-    email: string
+    @ApiProperty({description: 'Имя пользователя в облаке', example: 'user'})
+    @Column({comment: 'Имя пользователя в облаке', type: TEXT, defaultValue: '', allowNull: false})
+    cloudUsername: string
 
-    @ApiProperty({description: 'Активирован', example: false})
-    @Column({comment: 'Активирован', type: BOOLEAN, defaultValue: false, allowNull: false})
-    activated: boolean
+    @ApiProperty({description: 'Пароль в облаке', example: '12345678'})
+    @Column({comment: 'Пароль в облаке', type: TEXT, defaultValue: '', allowNull: false})
+    cloudPassword: string
 
-    @ApiProperty({description: 'Заблокирован', example: false})
-    @Column({comment: 'Заблокирован', type: BOOLEAN, defaultValue: false, allowNull: false})
-    banned: boolean
+    @ApiProperty({description: 'Директория сканирования в облаке', example: 'Телефон/Фотографии'})
+    @Column({comment: 'Директория сканирования в облаке', type: TEXT, defaultValue: '', allowNull: false})
+    cloudDirScan: string
+
+    @ApiProperty({description: 'Директория синхронизации в облаке', example: 'Семья/Фотографии'})
+    @Column({comment: 'Директория синхронизации в облаке', type: TEXT, defaultValue: '', allowNull: false})
+    cloudDirSync: string
 
 }
