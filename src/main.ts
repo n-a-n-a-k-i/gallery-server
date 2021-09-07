@@ -7,13 +7,11 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule)
     const PORT = process.env.PORT || 5000
 
-    SwaggerModule.setup('/', app, SwaggerModule.createDocument(app,
-        new DocumentBuilder()
-            .setTitle('Gallery')
-            .setDescription('Документация REST API')
-            .setVersion(process.env.npm_package_version)
-            // .addTag('Nanaki')
-            .build()
+    SwaggerModule.setup('/', app, SwaggerModule.createDocument(app, new DocumentBuilder()
+        .setTitle('Gallery')
+        .setDescription('Документация REST API')
+        .setVersion(process.env.npm_package_version)
+        .build()
     ))
 
     await app.listen(PORT, () => console.log(`http://localhost:${PORT}`))

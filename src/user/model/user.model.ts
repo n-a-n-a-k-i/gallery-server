@@ -11,7 +11,7 @@ interface UserModelCreate {
     cloudDirSync: string
 }
 
-@Table({tableName: 'user'})
+@Table({tableName: 'user', createdAt: false, updatedAt: false})
 export class UserModel extends Model<UserModel, UserModelCreate> {
 
     @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
