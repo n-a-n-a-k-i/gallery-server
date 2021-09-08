@@ -15,7 +15,14 @@ interface UserModelCreate {
 export class UserModel extends Model<UserModel, UserModelCreate> {
 
     @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
-    @Column({comment: 'Идентификатор', type: UUID, defaultValue: literal('gen_random_uuid()'), allowNull: false, unique: true, primaryKey: true})
+    @Column({
+        comment: 'Идентификатор',
+        type: UUID,
+        defaultValue: literal('gen_random_uuid()'),
+        allowNull: false,
+        unique: true,
+        primaryKey: true
+    })
     id: string
 
     @ApiProperty({description: 'Имя пользователя', example: 'user'})

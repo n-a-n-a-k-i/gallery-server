@@ -11,7 +11,8 @@ export class UserService {
     constructor(
         @InjectModel(UserModel)
         private userModel: typeof UserModel
-    ) {}
+    ) {
+    }
 
     async create(userCreateDto: UserCreateDto): Promise<UserDto> {
 
@@ -32,6 +33,10 @@ export class UserService {
     async findAll(): Promise<UserDto[]> {
         const userModels = await this.userModel.findAll()
         return userModels.map(userModel => new UserDto(userModel))
+    }
+
+    async findByUsername(username: string): Promise<UserModel | undefined> {
+        return this.userModel.findOne({where: {username}})
     }
 
 }
