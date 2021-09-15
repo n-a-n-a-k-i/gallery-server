@@ -2,10 +2,10 @@ import {NestFactory} from "@nestjs/core";
 import {AppModule} from "./app.module";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 
-async function bootstrap() {
+(async () => {
 
     const app = await NestFactory.create(AppModule)
-    const PORT = process.env.PORT || 5000
+    const PORT = Number(process.env.PORT) || 5000
 
     SwaggerModule.setup('/', app, SwaggerModule.createDocument(app, new DocumentBuilder()
         .setTitle('Gallery')
@@ -16,6 +16,4 @@ async function bootstrap() {
 
     await app.listen(PORT, () => console.log(`http://localhost:${PORT}`))
 
-}
-
-bootstrap()
+})()

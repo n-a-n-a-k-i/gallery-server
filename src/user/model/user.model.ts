@@ -1,18 +1,10 @@
 import {Column, Model, Table} from "sequelize-typescript";
 import {literal, TEXT, UUID} from "sequelize";
 import {ApiProperty} from "@nestjs/swagger";
-
-interface UserModelCreate {
-    username: string
-    password: string
-    cloudUsername: string
-    cloudPassword: string
-    cloudDirScan: string
-    cloudDirSync: string
-}
+import {UserCreateDto} from "../dto/user.create.dto";
 
 @Table({tableName: 'user', createdAt: false, updatedAt: false})
-export class UserModel extends Model<UserModel, UserModelCreate> {
+export class UserModel extends Model<UserModel, UserCreateDto> {
 
     @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
     @Column({

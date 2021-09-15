@@ -4,10 +4,17 @@ import {UserModule} from './user/user.module';
 import {ConfigModule} from "@nestjs/config";
 import {UserModel} from "./user/model/user.model";
 import {AccountModule} from './account/account.module';
+import {APP_GUARD} from "@nestjs/core";
+import {JwtAuthGuard} from "./account/guard/jwt.auth.guard";
 
 @Module({
     controllers: [],
-    providers: [],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: JwtAuthGuard
+        }
+    ],
     imports: [
         ConfigModule.forRoot(),
         SequelizeModule.forRoot({
@@ -22,8 +29,8 @@ import {AccountModule} from './account/account.module';
             ],
             autoLoadModels: true
         }),
-        UserModule,
-        AccountModule
+        AccountModule,
+        UserModule
     ]
 })
 export class AppModule {
