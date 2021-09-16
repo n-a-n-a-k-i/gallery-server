@@ -6,6 +6,9 @@ import {UserModel} from "./user/model/user.model";
 import {AccountModule} from './account/account.module';
 import {APP_GUARD} from "@nestjs/core";
 import {JwtAuthGuard} from "./account/guard/jwt.auth.guard";
+import {PermissionModel} from "./user/model/permission.model";
+import {UserPermissionModel} from "./user/model/user.permission.model";
+import {PermissionGuard} from "./account/guard/permission.guard";
 
 @Module({
     controllers: [],
@@ -13,6 +16,10 @@ import {JwtAuthGuard} from "./account/guard/jwt.auth.guard";
         {
             provide: APP_GUARD,
             useClass: JwtAuthGuard
+        },
+        {
+            provide: APP_GUARD,
+            useClass: PermissionGuard
         }
     ],
     imports: [
@@ -25,7 +32,9 @@ import {JwtAuthGuard} from "./account/guard/jwt.auth.guard";
             password: process.env.POSTGRES_PASSWORD || 'gallery',
             database: process.env.POSTGRES_DB || 'gallery',
             models: [
-                UserModel
+                UserModel,
+                PermissionModel,
+                UserPermissionModel
             ],
             autoLoadModels: true
         }),

@@ -1,5 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {UserModel} from "../model/user.model";
+import {PermissionDto} from "./permission.dto";
 
 export class UserDto {
 
@@ -9,6 +10,7 @@ export class UserDto {
         this.cloudUsername = userModel.cloudUsername
         this.cloudDirScan = userModel.cloudDirScan
         this.cloudDirSync = userModel.cloudDirSync
+        this.permissions = userModel.permissions.map(permissionModel => new PermissionDto(permissionModel))
     }
 
     @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
@@ -25,5 +27,8 @@ export class UserDto {
 
     @ApiProperty({description: 'Директория синхронизации в облаке', example: 'Семья/Фотографии'})
     readonly cloudDirSync: string
+
+    @ApiProperty({description: 'Разрешения', type: [PermissionDto]})
+    readonly permissions: PermissionDto[]
 
 }

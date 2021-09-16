@@ -1,8 +1,9 @@
 import {PassportStrategy} from "@nestjs/passport";
 import {Strategy} from "passport-local";
 import {AccountService} from "../account.service";
-import {BadRequestException, Injectable, UnauthorizedException} from "@nestjs/common";
+import {Injectable} from "@nestjs/common";
 import {UserModel} from "../../user/model/user.model";
+import {AccountSignInRequestDto} from "../dto/account.sign.in.request.dto";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -11,27 +12,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         super();
     }
 
-    /**
-     * Проверка имени пользователя и пароля происходит отдельно, так как:
-     * 1. Исключение пробрасывается на уровне стратегии, а не сервиса.
-     * 2. Необходимо определить вид исключения.
-     */
     async validate(username: string, password: string): Promise<UserModel> {
-
-        const userModel = await this.accountService.findUser(username)
-
-        if (!userModel) {
-            throw new BadRequestException('Пользователь не найден')
-        }
-
-        const success = await this.accountService.validatePassword(password, userModel)
-
-        if (!success) {
-            throw new UnauthorizedException('Не верный пароль')
-        }
-
-        return userModel
-
+        const accountSignInRequestDto = new AccountSignInRequestDto(username, password)
+        return await this.accountService.validate(accountSignInRequestDto)
     }
 
 }

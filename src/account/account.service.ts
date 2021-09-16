@@ -1,9 +1,10 @@
-import {Injectable} from '@nestjs/common';
+import {BadRequestException, Injectable, UnauthorizedException} from '@nestjs/common';
 import {UserService} from "../user/user.service";
 import * as bcrypt from 'bcryptjs'
 import {JwtService} from "@nestjs/jwt";
 import {UserModel} from "../user/model/user.model";
 import {AccountSignInResponseDto} from "./dto/account.sign.in.response.dto";
+import {AccountSignInRequestDto} from "./dto/account.sign.in.request.dto";
 
 @Injectable()
 export class AccountService {
@@ -14,21 +15,28 @@ export class AccountService {
     ) {
     }
 
-    async findUser(username: string): Promise<UserModel | null> {
+    async validate(accountSignInRequestDto: AccountSignInRequestDto): Promise<UserModel> {
 
-        return await this.userService.findByUsername(username)
+        const userModel = await this.userService.findByUsername(accountSignInRequestDto.username)
 
-    }
+        if (!userModel) {
+            throw new BadRequestException('Пользователь не найден')
+        }
 
-    async validatePassword(password: string, userModel: UserModel): Promise<boolean> {
+        const success = await bcrypt.compare(accountSignInRequestDto.password, userModel.password)
 
-        return await bcrypt.compare(password, userModel.password)
+        if (!success) {
+            throw new UnauthorizedException('Не верный пароль')
+        }
+
+        return userModel
 
     }
 
     async signIn(userModel: UserModel): Promise<AccountSignInResponseDto> {
 
-        const payload = {sub: userModel.id}
+        const permissions = userModel.permissions.map(permission => permission.id)
+        const payload = {sub: userModel.id, permissions}
         const token = this.jwtService.sign(payload)
 
         return new AccountSignInResponseDto(token)
