@@ -16,9 +16,9 @@ export class UserService {
     async create(userCreateDto: UserCreateDto): Promise<UserModel> {
 
         const {username, password} = userCreateDto
-        const candidate = await this.userModel.findOne({where: {username}})
+        const userModel = await this.findByUsername(username)
 
-        if (candidate) {
+        if (userModel) {
             throw new BadRequestException('Имя пользователя занято')
         }
 

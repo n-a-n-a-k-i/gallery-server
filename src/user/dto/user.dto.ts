@@ -1,6 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {UserModel} from "../model/user.model";
-import {PermissionDto} from "./permission.dto";
+import {PermissionDto} from "../../permission/dto/permission.dto";
 
 export class UserDto {
 

@@ -6,9 +6,10 @@ import {UserModel} from "./user/model/user.model";
 import {AccountModule} from './account/account.module';
 import {APP_GUARD} from "@nestjs/core";
 import {JwtAuthGuard} from "./account/guard/jwt.auth.guard";
-import {PermissionModel} from "./user/model/permission.model";
-import {UserPermissionModel} from "./user/model/user.permission.model";
+import {PermissionModel} from "./permission/model/permission.model";
+import {UserPermissionModel} from "./account/model/user.permission.model";
 import {PermissionGuard} from "./account/guard/permission.guard";
+import { PermissionModule } from './permission/permission.module';
 
 @Module({
     controllers: [],
@@ -39,7 +40,8 @@ import {PermissionGuard} from "./account/guard/permission.guard";
             autoLoadModels: true
         }),
         AccountModule,
-        UserModule
+        UserModule,
+        PermissionModule
     ]
 })
 export class AppModule {

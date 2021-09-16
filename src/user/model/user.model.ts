@@ -2,8 +2,8 @@ import {BelongsToMany, Column, Model, Table} from "sequelize-typescript";
 import {literal, TEXT, UUID} from "sequelize";
 import {ApiProperty} from "@nestjs/swagger";
 import {UserCreateDto} from "../dto/user.create.dto";
-import {PermissionModel} from "./permission.model";
-import {UserPermissionModel} from "./user.permission.model";
+import {PermissionModel} from "../../permission/model/permission.model";
+import {UserPermissionModel} from "../../account/model/user.permission.model";
 
 @Table({comment: 'Пользователь', tableName: 'user', createdAt: false, updatedAt: false})
 export class UserModel extends Model<UserModel, UserCreateDto> {
