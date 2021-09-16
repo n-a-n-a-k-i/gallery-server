@@ -4,7 +4,7 @@ import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 
 (async () => {
 
-    const app = await NestFactory.create(AppModule)
+    const app = await NestFactory.create(AppModule, {cors: true})
     const PORT = Number(process.env.PORT) || 5000
 
     SwaggerModule.setup('/', app, SwaggerModule.createDocument(app, new DocumentBuilder()
