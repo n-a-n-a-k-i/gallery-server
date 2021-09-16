@@ -16,8 +16,8 @@ export class AccountController {
     @ApiOperation({summary: 'Войти'})
     @ApiResponse({type: AccountSignInResponseDto})
     @ApiBody({type: AccountSignInRequestDto})
-    @Public()
     @UseGuards(LocalAuthGuard)
+    @Public()
     @Post('/sign/in')
     async signIn(@Request() req): Promise<AccountSignInResponseDto> {
         return this.accountService.signIn(req.user)

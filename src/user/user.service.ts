@@ -2,7 +2,7 @@ import {BadRequestException, Injectable} from '@nestjs/common';
 import {UserModel} from "./model/user.model";
 import {InjectModel} from "@nestjs/sequelize";
 import {UserCreateDto} from "./dto/user.create.dto";
-import * as bcrypt from 'bcryptjs'
+import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class UserService {
