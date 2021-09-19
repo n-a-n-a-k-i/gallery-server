@@ -1,8 +1,9 @@
-import {BadRequestException, Injectable} from '@nestjs/common';
+import {BadRequestException, Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
 import {UserModel} from "./model/user.model";
 import {InjectModel} from "@nestjs/sequelize";
 import {UserCreateDto} from "./dto/user.create.dto";
 import * as bcrypt from 'bcrypt'
+import {UniqueConstraintError} from "sequelize";
 
 @Injectable()
 export class UserService {
@@ -15,17 +16,23 @@ export class UserService {
 
     async create(userCreateDto: UserCreateDto): Promise<UserModel> {
 
-        const {username, password} = userCreateDto
-        const userModel = await this.findByUsername(username)
+        const rounds = Number(process.env.BCRYPT_SALT_ROUNDS);
+        const salt = await bcrypt.genSalt(rounds)
+        const password = await bcrypt.hash(userCreateDto.password, salt)
 
-        if (userModel) {
-            throw new BadRequestException('Имя пользователя занято')
+        try {
+
+            return await this.userModel.create({...userCreateDto, password})
+
+        } catch (error) {
+
+            if (error instanceof UniqueConstraintError) {
+                throw new BadRequestException('Имя пользователя занято')
+            }
+
+            throw new InternalServerErrorException('Что-то пошло не так')
+
         }
-
-        const salt = await bcrypt.genSalt(Number(process.env.BCRYPT_SALT_ROUNDS))
-        const hash = await bcrypt.hash(password, salt)
-        await this.userModel.create({...userCreateDto, password: hash})
-        return this.findByUsername(username)
 
     }
 
@@ -34,7 +41,11 @@ export class UserService {
     }
 
     async findByUsername(username: string): Promise<UserModel | undefined> {
-        return this.userModel.findOne({where: {username}, include: {all: true}})
+        const userModel = await this.userModel.findOne({where: {username}, include: {all: true}})
+        if (!userModel) {
+            throw new NotFoundException('Пользователь не найден')
+        }
+        return userModel
     }
 
 }

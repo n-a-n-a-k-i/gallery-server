@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, UnauthorizedException} from '@nestjs/common';
+import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {UserService} from "../user/user.service";
 import * as bcrypt from 'bcrypt'
 import {JwtService} from "@nestjs/jwt";
@@ -18,11 +18,6 @@ export class AccountService {
     async validate(accountSignInRequestDto: AccountSignInRequestDto): Promise<UserModel> {
 
         const userModel = await this.userService.findByUsername(accountSignInRequestDto.username)
-
-        if (!userModel) {
-            throw new BadRequestException('Пользователь не найден')
-        }
-
         const success = await bcrypt.compare(accountSignInRequestDto.password, userModel.password)
 
         if (!success) {
