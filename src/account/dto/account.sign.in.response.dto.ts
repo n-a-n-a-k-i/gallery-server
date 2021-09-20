@@ -6,7 +6,7 @@ export class AccountSignInResponseDto {
         this.token = token
     }
 
-    @ApiProperty({description: 'Токен доступа', example: 'xxx.yyy.zzz'})
+    @ApiProperty({description: 'Токен доступа', example: 'xxxxx.yyyyy.zzzzz'})
     readonly token: string
 
 }

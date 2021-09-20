@@ -4,8 +4,8 @@ import {UserModule} from "../user/user.module";
 import {LocalStrategy} from "./strategy/local.strategy";
 import {PassportModule} from "@nestjs/passport";
 import {AccountController} from "./account.controller";
-import {JwtModule} from "@nestjs/jwt";
 import {JwtStrategy} from "./strategy/jwt.strategy";
+import {TokenModule} from "../token/token.module";
 
 @Module({
     controllers: [AccountController],
@@ -13,12 +13,7 @@ import {JwtStrategy} from "./strategy/jwt.strategy";
     imports: [
         UserModule,
         PassportModule,
-        JwtModule.register({
-            secret: process.env.JWT_ACCESS_TOKEN_SECRET || 'secret-for-access-token',
-            signOptions: {
-                expiresIn: `${eval(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME) || 60 * 12}s`
-            }
-        })
+        TokenModule
     ]
 })
 export class AccountModule {

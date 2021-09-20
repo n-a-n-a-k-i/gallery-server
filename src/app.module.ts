@@ -29,11 +29,11 @@ import {TokenModel} from "./token/model/token.model";
         ConfigModule.forRoot(),
         SequelizeModule.forRoot({
             dialect: 'postgres',
-            host: process.env.POSTGRES_HOST || 'localhost',
-            port: Number(process.env.POSTGRES_PORT) || 5432,
-            username: process.env.POSTGRES_USER || 'gallery',
-            password: process.env.POSTGRES_PASSWORD || 'gallery',
-            database: process.env.POSTGRES_DB || 'gallery',
+            host: process.env.POSTGRES_HOST,
+            port: Number(process.env.POSTGRES_PORT),
+            username: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+            database: process.env.POSTGRES_DB,
             models: [
                 UserModel,
                 PermissionModel,

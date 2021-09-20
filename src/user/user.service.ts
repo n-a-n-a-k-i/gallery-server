@@ -17,7 +17,7 @@ export class UserService {
 
     async create(userCreateDto: UserCreateDto): Promise<UserModel> {
 
-        const rounds = Number(process.env.BCRYPT_SALT_ROUNDS) || 10;
+        const rounds = Number(process.env.BCRYPT_SALT_ROUNDS);
         const salt = await bcrypt.genSalt(rounds)
         const password = await bcrypt.hash(userCreateDto.password, salt)
 
