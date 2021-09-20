@@ -3,7 +3,7 @@ import {ApiProperty} from "@nestjs/swagger";
 export class AccountJwtValidateDto {
 
     constructor(payload: any) {
-        this.id = payload.sub
+        this.id = payload.id
         this.permissions = payload.permissions
     }
 

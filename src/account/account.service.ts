@@ -30,8 +30,8 @@ export class AccountService {
 
     async signIn(userModel: UserModel): Promise<AccountSignInResponseDto> {
 
-        const permissions = userModel.permissions.map(permission => permission.id)
-        const payload = {sub: userModel.id, permissions}
+        const permissions = userModel.permissions.map(permission => permission.value)
+        const payload = {id: userModel.id, permissions}
         const token = this.jwtService.sign(payload)
 
         return new AccountSignInResponseDto(token)
