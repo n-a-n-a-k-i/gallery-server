@@ -2,9 +2,9 @@ import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {UserService} from "../user/user.service";
 import * as bcrypt from 'bcrypt'
 import {UserModel} from "../user/model/user.model";
-import {AccountSignInResponseDto} from "./dto/account.sign.in.response.dto";
 import {AccountSignInRequestDto} from "./dto/account.sign.in.request.dto";
 import {TokenService} from "../token/token.service";
+import {Token} from "../token/interface/token.interface";
 
 @Injectable()
 export class AccountService {
@@ -28,12 +28,8 @@ export class AccountService {
 
     }
 
-    async signIn(userModel: UserModel): Promise<AccountSignInResponseDto> {
-
-        const token = this.tokenService.generate(userModel)
-
-        return new AccountSignInResponseDto(token.access)
-
+    async signIn(userModel: UserModel): Promise<Token> {
+        return this.tokenService.generate(userModel)
     }
 
 }

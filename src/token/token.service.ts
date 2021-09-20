@@ -1,10 +1,12 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {TokenModel} from "./model/token.model";
 import {UserModel} from "../user/model/user.model";
 import {Payload} from "./interface/payload.interface";
 import {JwtService} from "@nestjs/jwt";
 import {Token} from "./interface/token.interface";
+import * as bcrypt from 'bcrypt'
+import {UniqueConstraintError} from "sequelize";
 
 @Injectable()
 export class TokenService {
@@ -17,7 +19,60 @@ export class TokenService {
     }
 
     async findAll(): Promise<TokenModel[]> {
+        try {
+            const re = await this.tokenModel.update({value: 'zxc'}, {where: {id: 'eb48ad52-622d-4eb8-84ed-2722ac7e2fb2'}})
+            console.log(re[0])
+        } catch (error) {
+            console.log(error)
+        }
         return await this.tokenModel.findAll()
+    }
+
+    async create(token: string, user: string) {
+
+        const value = await this.hash(token)
+
+        try {
+
+            return await this.tokenModel.create({value, user})
+
+        } catch (error) {
+
+            if (error instanceof UniqueConstraintError) {
+                throw new InternalServerErrorException('Токен уже используется')
+            }
+
+            throw new InternalServerErrorException('Ошибка при создании токена')
+
+        }
+
+    }
+
+    async update(oldToken, newToken, user) {
+
+        const oldValue = await this.hash(oldToken)
+        const tokenModel = await this.tokenModel.findOne({
+            where: {
+                value: oldValue,
+                user
+            }
+        })
+
+        if (!tokenModel) {
+            throw new UnauthorizedException('Токен не найден')
+        }
+
+        tokenModel.value = await this.hash(newToken)
+        return tokenModel.save()
+
+    }
+
+    async hash(value: string): Promise<string> {
+
+        const rounds = Number(process.env.BCRYPT_REFRESH_TOKEN_SALT_ROUNDS)
+        const salt = await bcrypt.genSalt(rounds)
+        return await bcrypt.hash(value, salt)
+
     }
 
     generate(userModel: UserModel): Token {

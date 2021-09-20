@@ -1,4 +1,4 @@
-import {Controller, HttpCode, Post, Request, UseGuards} from "@nestjs/common";
+import {Controller, HttpCode, Post, Req, Res, UseGuards} from "@nestjs/common";
 import {LocalAuthGuard} from "./guard/local.auth.guard";
 import {AccountService} from "./account.service";
 import {Public} from "./decorator/public.decorator";
@@ -6,6 +6,7 @@ import {ApiBody, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {AccountSignInResponseDto} from "./dto/account.sign.in.response.dto";
 import {AccountSignInRequestDto} from "./dto/account.sign.in.request.dto";
 import {RequestWithUser} from "./interface/request.with.user.interface";
+import {Response} from "express";
 
 @ApiTags('Аккаунт')
 @Controller('account')
@@ -21,8 +22,13 @@ export class AccountController {
     @UseGuards(LocalAuthGuard)
     @Public()
     @Post('/sign-in')
-    async signIn(@Request() request: RequestWithUser): Promise<AccountSignInResponseDto> {
-        return this.accountService.signIn(request.user)
+    async signIn(
+        @Req() request: RequestWithUser,
+        @Res({passthrough: true}) response: Response
+    ): Promise<AccountSignInResponseDto> {
+        const token = await this.accountService.signIn(request.user)
+        response.cookie('token', token.refresh)
+        return new AccountSignInResponseDto(token.access)
     }
 
 }

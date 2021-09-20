@@ -4,7 +4,7 @@ import {literal, TEXT, UUID} from "sequelize";
 import {UserModel} from "../../user/model/user.model";
 
 @Table({comment: 'Токен', tableName: 'token', createdAt: false, updatedAt: false})
-export class TokenModel extends Model<TokenModel> {
+export class TokenModel extends Model {
 
     @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
     @Column({
@@ -21,6 +21,7 @@ export class TokenModel extends Model<TokenModel> {
     @Column({comment: 'Значение', type: TEXT, allowNull: false, unique: true})
     value: string
 
+    @ApiProperty({description: 'Пользователь', example: '00000000-0000-0000-0000-000000000000'})
     @ForeignKey(() => UserModel)
     @Column({type: UUID})
     user: string

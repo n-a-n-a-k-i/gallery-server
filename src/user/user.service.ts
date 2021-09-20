@@ -17,7 +17,7 @@ export class UserService {
 
     async create(userCreateDto: UserCreateDto): Promise<UserModel> {
 
-        const rounds = Number(process.env.BCRYPT_SALT_ROUNDS);
+        const rounds = Number(process.env.BCRYPT_PASSWORD_SALT_ROUNDS)
         const salt = await bcrypt.genSalt(rounds)
         const password = await bcrypt.hash(userCreateDto.password, salt)
 
@@ -31,7 +31,7 @@ export class UserService {
                 throw new BadRequestException('Имя пользователя занято')
             }
 
-            throw new InternalServerErrorException('Что-то пошло не так')
+            throw new InternalServerErrorException('Ошибка при создании пользователя')
 
         }
 
