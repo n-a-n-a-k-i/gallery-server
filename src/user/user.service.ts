@@ -4,6 +4,7 @@ import {InjectModel} from "@nestjs/sequelize";
 import {UserCreateDto} from "./dto/user.create.dto";
 import * as bcrypt from 'bcrypt'
 import {UniqueConstraintError} from "sequelize";
+import {PermissionModel} from "../permission/model/permission.model";
 
 @Injectable()
 export class UserService {
@@ -37,11 +38,20 @@ export class UserService {
     }
 
     async findAll(): Promise<UserModel[]> {
-        return await this.userModel.findAll({include: {all: true}})
+        return await this.userModel.findAll({
+            include: [{
+                model: PermissionModel
+            }]
+        })
     }
 
     async findByUsername(username: string): Promise<UserModel | undefined> {
-        const userModel = await this.userModel.findOne({where: {username}, include: {all: true}})
+        const userModel = await this.userModel.findOne({
+            where: {username},
+            include: [{
+                model: PermissionModel
+            }]
+        })
         if (!userModel) {
             throw new NotFoundException('Пользователь не найден')
         }

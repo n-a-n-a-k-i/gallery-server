@@ -9,7 +9,9 @@ import {JwtAuthGuard} from "./account/guard/jwt.auth.guard";
 import {PermissionModel} from "./permission/model/permission.model";
 import {UserPermissionModel} from "./account/model/user.permission.model";
 import {PermissionGuard} from "./account/guard/permission.guard";
-import { PermissionModule } from './permission/permission.module';
+import {PermissionModule} from './permission/permission.module';
+import {TokenModule} from './token/token.module';
+import {TokenModel} from "./token/model/token.model";
 
 @Module({
     controllers: [],
@@ -35,13 +37,15 @@ import { PermissionModule } from './permission/permission.module';
             models: [
                 UserModel,
                 PermissionModel,
-                UserPermissionModel
+                UserPermissionModel,
+                TokenModel
             ],
             autoLoadModels: true
         }),
         AccountModule,
         UserModule,
-        PermissionModule
+        PermissionModule,
+        TokenModule
     ]
 })
 export class AppModule {

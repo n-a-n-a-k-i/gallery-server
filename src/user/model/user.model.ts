@@ -1,9 +1,10 @@
-import {BelongsToMany, Column, Model, Table} from "sequelize-typescript";
+import {BelongsToMany, Column, HasMany, Model, Table} from "sequelize-typescript";
 import {literal, TEXT, UUID} from "sequelize";
 import {ApiProperty} from "@nestjs/swagger";
 import {UserCreateDto} from "../dto/user.create.dto";
 import {PermissionModel} from "../../permission/model/permission.model";
 import {UserPermissionModel} from "../../account/model/user.permission.model";
+import {TokenModel} from "../../token/model/token.model";
 
 @Table({comment: 'Пользователь', tableName: 'user', createdAt: false, updatedAt: false})
 export class UserModel extends Model<UserModel, UserCreateDto> {
@@ -42,6 +43,9 @@ export class UserModel extends Model<UserModel, UserCreateDto> {
     @ApiProperty({description: 'Директория синхронизации в облаке', example: 'Семья/Фотографии'})
     @Column({comment: 'Директория синхронизации в облаке', type: TEXT, defaultValue: '', allowNull: false})
     cloudDirSync: string
+
+    @HasMany(() => TokenModel)
+    tokens: TokenModel[]
 
     @BelongsToMany(() => PermissionModel, () => UserPermissionModel)
     permissions: PermissionModel[]
