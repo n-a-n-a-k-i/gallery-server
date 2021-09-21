@@ -6,7 +6,7 @@ import {Payload} from "./interface/payload.interface";
 import {JwtService} from "@nestjs/jwt";
 import {Token} from "./interface/token.interface";
 import * as bcrypt from 'bcrypt'
-import {UniqueConstraintError} from "sequelize";
+import {Op, UniqueConstraintError} from "sequelize";
 
 @Injectable()
 export class TokenService {
@@ -31,10 +31,12 @@ export class TokenService {
     async create(token: string, user: string) {
 
         const value = await this.hash(token)
+        const expiresIn = new Date(Date.now() + eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000)
 
         try {
 
-            return await this.tokenModel.create({value, user})
+            await this.removeExpired()
+            return await this.tokenModel.create({value, user, expiresIn})
 
         } catch (error) {
 
@@ -63,7 +65,24 @@ export class TokenService {
         }
 
         tokenModel.value = await this.hash(newToken)
+
         return tokenModel.save()
+
+    }
+
+    async removeExpired(): Promise<number> {
+
+        const total = await this.tokenModel.destroy({
+            where: {
+                expiresIn: {
+                    [Op.lt]: new Date()
+                }
+            }
+        })
+
+        if (total) console.log(`Удалено токенов: ${total}`)
+
+        return total
 
     }
 
@@ -71,6 +90,7 @@ export class TokenService {
 
         const rounds = Number(process.env.BCRYPT_REFRESH_TOKEN_SALT_ROUNDS)
         const salt = await bcrypt.genSalt(rounds)
+
         return await bcrypt.hash(value, salt)
 
     }

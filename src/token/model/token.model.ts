@@ -1,6 +1,6 @@
 import {BelongsTo, Column, ForeignKey, Model, Table} from "sequelize-typescript";
 import {ApiProperty} from "@nestjs/swagger";
-import {literal, TEXT, UUID} from "sequelize";
+import {DATE, literal, TEXT, UUID} from "sequelize";
 import {UserModel} from "../../user/model/user.model";
 
 @Table({comment: 'Токен', tableName: 'token', createdAt: false, updatedAt: false})
@@ -20,6 +20,10 @@ export class TokenModel extends Model {
     @ApiProperty({description: 'Значение', example: 'xxxxx.yyyyy.zzzzz'})
     @Column({comment: 'Значение', type: TEXT, allowNull: false, unique: true})
     value: string
+
+    @ApiProperty({description: 'Истекает', example: '2021-10-21T06:32:32.401Z'})
+    @Column({comment: 'Истекает', type: DATE, allowNull: false})
+    expiresIn: Date
 
     @ApiProperty({description: 'Пользователь', example: '00000000-0000-0000-0000-000000000000'})
     @ForeignKey(() => UserModel)
