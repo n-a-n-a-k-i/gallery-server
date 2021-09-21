@@ -26,9 +26,15 @@ export class AccountController {
         @Req() request: RequestWithUser,
         @Res({passthrough: true}) response: Response
     ): Promise<AccountSignInResponseDto> {
+
         const token = await this.accountService.signIn(request.user)
-        response.cookie('token', token.refresh)
+        const maxAge = eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000
+
+        response.cookie('token', token.refresh, {httpOnly: true, maxAge, path: '/account/refresh'})
+        response.cookie('token', token.refresh, {httpOnly: true, maxAge, path: '/account/log-out'})
+
         return new AccountSignInResponseDto(token.access)
+
     }
 
 }

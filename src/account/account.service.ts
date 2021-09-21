@@ -29,7 +29,9 @@ export class AccountService {
     }
 
     async signIn(userModel: UserModel): Promise<Token> {
-        return this.tokenService.generate(userModel)
+        const token = this.tokenService.generate(userModel)
+        await this.tokenService.create(token.refresh, userModel.id)
+        return token
     }
 
 }
