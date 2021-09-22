@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {Reflector} from "@nestjs/core";
 import {Permission} from "../enum/permission.enum";
 import {PERMISSION_KEY} from "../decorator/permissions.decorator";
-import {RequestUser} from "../interface/request.user.interface";
+import {RequestWithUser} from "../interface/request.interface";
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
@@ -22,7 +22,7 @@ export class PermissionGuard implements CanActivate {
             return true
         }
 
-        const {user} = context.switchToHttp().getRequest<RequestUser>()
+        const {user} = context.switchToHttp().getRequest<RequestWithUser>()
         const success = permissions.some(permission => user.permissions.includes(permission))
 
         if (!success) {

@@ -1,9 +1,12 @@
 import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {PassportStrategy} from "@nestjs/passport";
 import {ExtractJwt, Strategy} from "passport-jwt";
-import {Payload} from "../interface/payload.interface";
-import {RequestUserCookie} from "../interface/request.user.cookie.interface";
 import {RefreshTokenService} from "../../refresh.token/refresh.token.service";
+import {
+    Payload,
+    RequestWithCookieRefreshToken,
+    RequestWithUserAndCookieRefreshToken
+} from "../interface/request.interface";
 
 @Injectable()
 export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
@@ -13,7 +16,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([
-                (request: RequestUserCookie) => request.cookies?.refreshToken
+                (request: RequestWithCookieRefreshToken) => request.cookies?.refreshToken
             ]),
             ignoreExpiration: false,
             secretOrKey: process.env.JWT_REFRESH_TOKEN_SECRET,
@@ -21,7 +24,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
         });
     }
 
-    async validate(request: RequestUserCookie, payload: Payload): Promise<Payload> {
+    async validate(request: RequestWithUserAndCookieRefreshToken, payload: Payload): Promise<Payload> {
 
         const refreshToken = request.cookies.refreshToken
         const tokenModel = await this.refreshTokenService.findByRefreshToken(refreshToken)
@@ -34,5 +37,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
         return payload
 
     }
+
+
 
 }

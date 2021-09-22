@@ -3,8 +3,8 @@ import {Strategy} from "passport-local";
 import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {UserService} from "../../user/user.service";
 import * as bcrypt from 'bcrypt'
-import {Payload} from "../interface/payload.interface";
 import {AccountService} from "../account.service";
+import {Payload} from "../interface/request.interface";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {

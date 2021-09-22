@@ -7,8 +7,7 @@ import {Response} from "express";
 import {JwtRefreshTokenGuard} from "./guard/jwt.refresh.token.guard";
 import {AccessTokenDto} from "./dto/access.token.dto";
 import {SignInDto} from "./dto/sign.in.dto";
-import {RequestUser} from "./interface/request.user.interface";
-import {RequestUserCookie} from "./interface/request.user.cookie.interface";
+import {RequestWithUser, RequestWithUserAndCookieRefreshToken} from "./interface/request.interface";
 
 @ApiTags('Аккаунт')
 @Controller('account')
@@ -25,7 +24,7 @@ export class AccountController {
     @Public()
     @Post('/sign-in')
     async signIn(
-        @Req() request: RequestUser,
+        @Req() request: RequestWithUser,
         @Res({passthrough: true}) response: Response
     ): Promise<AccessTokenDto> {
 
@@ -47,7 +46,7 @@ export class AccountController {
     @UseGuards(JwtRefreshTokenGuard)
     @Get('/refresh')
     async refresh(
-        @Req() request: RequestUserCookie,
+        @Req() request: RequestWithUserAndCookieRefreshToken,
         @Res({passthrough: true}) response: Response
     ): Promise<AccessTokenDto> {
         const oldPayload = request.user
