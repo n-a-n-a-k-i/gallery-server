@@ -4,7 +4,7 @@ import {ApiProperty} from "@nestjs/swagger";
 import {UserCreateDto} from "../dto/user.create.dto";
 import {PermissionModel} from "../../permission/model/permission.model";
 import {UserPermissionModel} from "../../account/model/user.permission.model";
-import {TokenModel} from "../../token/model/token.model";
+import {RefreshTokenModel} from "../../refresh.token/model/refresh.token.model";
 
 @Table({comment: 'Пользователь', tableName: 'user', createdAt: false, updatedAt: false})
 export class UserModel extends Model<UserModel, UserCreateDto> {
@@ -24,7 +24,7 @@ export class UserModel extends Model<UserModel, UserCreateDto> {
     @Column({comment: 'Имя пользователя', type: TEXT, allowNull: false, unique: true})
     username: string
 
-    @ApiProperty({description: 'Пароль', example: '12345678'})
+    @ApiProperty({description: 'Пароль', example: 'bcrypt#12345678'})
     @Column({comment: 'Пароль', type: TEXT, allowNull: false})
     password: string
 
@@ -44,8 +44,8 @@ export class UserModel extends Model<UserModel, UserCreateDto> {
     @Column({comment: 'Директория синхронизации в облаке', type: TEXT, defaultValue: '', allowNull: false})
     cloudDirSync: string
 
-    @HasMany(() => TokenModel)
-    tokens: TokenModel[]
+    @HasMany(() => RefreshTokenModel)
+    tokens: RefreshTokenModel[]
 
     @BelongsToMany(() => PermissionModel, () => UserPermissionModel)
     permissions: PermissionModel[]

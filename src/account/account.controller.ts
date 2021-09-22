@@ -3,11 +3,12 @@ import {LocalGuard} from "./guard/local.guard";
 import {AccountService} from "./account.service";
 import {Public} from "./decorator/public.decorator";
 import {ApiBody, ApiCookieAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
-import {RequestWithUser} from "./interface/request.with.user.interface";
 import {Response} from "express";
 import {JwtRefreshTokenGuard} from "./guard/jwt.refresh.token.guard";
 import {AccessTokenDto} from "./dto/access.token.dto";
 import {SignInDto} from "./dto/sign.in.dto";
+import {RequestUser} from "./interface/request.user.interface";
+import {RequestUserCookie} from "./interface/request.user.cookie.interface";
 
 @ApiTags('Аккаунт')
 @Controller('account')
@@ -24,17 +25,18 @@ export class AccountController {
     @Public()
     @Post('/sign-in')
     async signIn(
-        @Req() request: RequestWithUser,
+        @Req() request: RequestUser,
         @Res({passthrough: true}) response: Response
     ): Promise<AccessTokenDto> {
 
-        const token = await this.accountService.signIn(request.user)
+        const payload = request.user
+        const {accessToken, refreshToken} = await this.accountService.signIn(payload)
         const maxAge = eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000
 
-        response.cookie('token', token.refresh, {httpOnly: true, maxAge, path: '/account/refresh'})
-        response.cookie('token', token.refresh, {httpOnly: true, maxAge, path: '/account/log-out'})
+        response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/refresh'})
+        response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/log-out'})
 
-        return {token: token.access}
+        return {accessToken}
 
     }
 
@@ -45,12 +47,19 @@ export class AccountController {
     @UseGuards(JwtRefreshTokenGuard)
     @Get('/refresh')
     async refresh(
-        @Req() request: RequestWithUser,
+        @Req() request: RequestUserCookie,
         @Res({passthrough: true}) response: Response
-    ) {
-        console.log(request.user)
-        console.log(request.cookies)
-        return 'ok'
+    ): Promise<AccessTokenDto> {
+        const oldPayload = request.user
+        const oldRefreshToken = request.cookies.refreshToken
+        const {accessToken, refreshToken} = await this.accountService.refresh(oldPayload, oldRefreshToken)
+        const maxAge = eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000
+
+        response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/refresh'})
+        response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/log-out'})
+
+        return {accessToken}
+
     }
 
 }

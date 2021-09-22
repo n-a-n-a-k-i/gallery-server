@@ -1,9 +1,9 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {TokenModel} from "../model/token.model";
+import {RefreshTokenModel} from "../model/refresh.token.model";
 
-export class TokenDto {
+export class RefreshTokenDto {
 
-    constructor(tokenModel: TokenModel) {
+    constructor(tokenModel: RefreshTokenModel) {
         this.id = tokenModel.id
         this.value = tokenModel.value
         this.expiresIn = tokenModel.expiresIn
@@ -13,7 +13,7 @@ export class TokenDto {
     @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
     readonly id: string
 
-    @ApiProperty({description: 'Значение', example: 'xxxxx.yyyyy.zzzzz'})
+    @ApiProperty({description: 'Значение', example: 'crypto#xxxxx.yyyyy.zzzzz'})
     readonly value: string
 
     @ApiProperty({description: 'Истекает', example: '2021-10-21T06:32:32.401Z'})

@@ -10,8 +10,8 @@ import {PermissionModel} from "./permission/model/permission.model";
 import {UserPermissionModel} from "./account/model/user.permission.model";
 import {PermissionGuard} from "./account/guard/permission.guard";
 import {PermissionModule} from './permission/permission.module';
-import {TokenModule} from './token/token.module';
-import {TokenModel} from "./token/model/token.model";
+import {RefreshTokenModel} from "./refresh.token/model/refresh.token.model";
+import {RefreshTokenModule} from "./refresh.token/refresh.token.module";
 
 @Module({
     controllers: [],
@@ -38,14 +38,14 @@ import {TokenModel} from "./token/model/token.model";
                 UserModel,
                 PermissionModel,
                 UserPermissionModel,
-                TokenModel
+                RefreshTokenModel
             ],
             autoLoadModels: true
         }),
         AccountModule,
         UserModule,
         PermissionModule,
-        TokenModule
+        RefreshTokenModule
     ]
 })
 export class AppModule {

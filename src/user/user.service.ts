@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, InternalServerErrorException} from '@nestjs/common';
 import {UserModel} from "./model/user.model";
 import {InjectModel} from "@nestjs/sequelize";
 import {UserCreateDto} from "./dto/user.create.dto";
@@ -17,9 +17,7 @@ export class UserService {
 
     async create(userCreateDto: UserCreateDto): Promise<UserModel> {
 
-        const rounds = Number(process.env.BCRYPT_PASSWORD_SALT_ROUNDS)
-        const salt = await bcrypt.genSalt(rounds)
-        const password = await bcrypt.hash(userCreateDto.password, salt)
+        const password = await this.hashPassword(userCreateDto.password)
 
         try {
 
@@ -45,17 +43,34 @@ export class UserService {
         })
     }
 
+    async findById(id: string): Promise<UserModel> {
+
+        return await this.userModel.findByPk(id, {
+            include: [{
+                model: PermissionModel
+            }]
+        })
+
+    }
+
     async findByUsername(username: string): Promise<UserModel> {
-        const userModel = await this.userModel.findOne({
+
+        return await this.userModel.findOne({
             where: {username},
             include: [{
                 model: PermissionModel
             }]
         })
-        if (!userModel) {
-            throw new NotFoundException('Пользователь не найден')
-        }
-        return userModel
+
+    }
+
+    async hashPassword(password: string): Promise<string> {
+
+        const rounds = Number(process.env.BCRYPT_PASSWORD_SALT_ROUNDS)
+        const salt = await bcrypt.genSalt(rounds)
+
+        return await bcrypt.hash(password, salt)
+
     }
 
 }

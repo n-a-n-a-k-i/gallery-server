@@ -3,15 +3,15 @@ import {Strategy} from "passport-local";
 import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {UserService} from "../../user/user.service";
 import * as bcrypt from 'bcrypt'
-import {Payload} from "../../token/interface/payload.interface";
-import {TokenService} from "../../token/token.service";
+import {Payload} from "../../refresh.token/interface/payload.interface";
+import {RefreshTokenService} from "../../refresh.token/refresh.token.service";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
 
     constructor(
         private userService: UserService,
-        private tokenService: TokenService
+        private refreshTokenService: RefreshTokenService
     ) {
         super();
     }
@@ -19,13 +19,20 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     async validate(username: string, password: string): Promise<Payload> {
 
         const userModel = await this.userService.findByUsername(username)
+
+        if (!userModel) {
+            console.log(`Пользователь не найден: ${username}`)
+            throw new UnauthorizedException('Неверное имя пользователя или пароль')
+        }
+
         const success = await bcrypt.compare(password, userModel.password)
 
         if (!success) {
-            throw new UnauthorizedException('Не верный пароль')
+            console.log(`Не верный пароль: ${username}`)
+            throw new UnauthorizedException('Неверное имя пользователя или пароль')
         }
 
-        return this.tokenService.generatePayload(userModel)
+        return this.refreshTokenService.generatePayload(userModel)
 
     }
 

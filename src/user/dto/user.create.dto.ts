@@ -5,7 +5,7 @@ export class UserCreateDto {
     @ApiProperty({description: 'Имя пользователя', example: 'user'})
     readonly username: string
 
-    @ApiProperty({description: 'Пароль', example: '12345678'})
+    @ApiProperty({description: 'Пароль', example: 'bcrypt#12345678'})
     readonly password: string
 
     @ApiProperty({description: 'Имя пользователя в облаке', example: 'user'})

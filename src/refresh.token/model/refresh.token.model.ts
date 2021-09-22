@@ -3,8 +3,8 @@ import {ApiProperty} from "@nestjs/swagger";
 import {DATE, literal, TEXT, UUID} from "sequelize";
 import {UserModel} from "../../user/model/user.model";
 
-@Table({comment: 'Токен', tableName: 'token', createdAt: false, updatedAt: false})
-export class TokenModel extends Model {
+@Table({comment: 'Токен обновления', tableName: 'refresh_token', createdAt: false, updatedAt: false})
+export class RefreshTokenModel extends Model {
 
     @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
     @Column({
@@ -17,7 +17,7 @@ export class TokenModel extends Model {
     })
     id: string
 
-    @ApiProperty({description: 'Значение', example: 'xxxxx.yyyyy.zzzzz'})
+    @ApiProperty({description: 'Значение', example: 'crypto#xxxxx.yyyyy.zzzzz'})
     @Column({comment: 'Значение', type: TEXT, allowNull: false, unique: true})
     value: string
 

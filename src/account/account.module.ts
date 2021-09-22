@@ -5,8 +5,8 @@ import {LocalStrategy} from "./strategy/local.strategy";
 import {PassportModule} from "@nestjs/passport";
 import {AccountController} from "./account.controller";
 import {JwtAccessTokenStrategy} from "./strategy/jwt.access.token.strategy";
-import {TokenModule} from "../token/token.module";
 import {JwtRefreshTokenStrategy} from "./strategy/jwt.refresh.token.strategy";
+import {RefreshTokenModule} from "../refresh.token/refresh.token.module";
 
 @Module({
     controllers: [AccountController],
@@ -19,7 +19,7 @@ import {JwtRefreshTokenStrategy} from "./strategy/jwt.refresh.token.strategy";
     imports: [
         UserModule,
         PassportModule,
-        TokenModule
+        RefreshTokenModule
     ]
 })
 export class AccountModule {
