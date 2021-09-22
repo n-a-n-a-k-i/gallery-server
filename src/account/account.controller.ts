@@ -33,7 +33,7 @@ export class AccountController {
         const maxAge = eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000
 
         response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/refresh'})
-        response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/log-out'})
+        response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/sign-out'})
 
         return {accessToken}
 
@@ -49,15 +49,33 @@ export class AccountController {
         @Req() request: RequestWithUserAndCookieRefreshToken,
         @Res({passthrough: true}) response: Response
     ): Promise<AccessTokenDto> {
-        const oldPayload = request.user
-        const oldRefreshToken = request.cookies.refreshToken
-        const {accessToken, refreshToken} = await this.accountService.refresh(oldPayload, oldRefreshToken)
+
+        const {
+            accessToken,
+            refreshToken
+        } = await this.accountService.refresh(request.user, request.cookies.refreshToken)
         const maxAge = eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000
 
         response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/refresh'})
-        response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/log-out'})
+        response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/sign-out'})
 
         return {accessToken}
+
+    }
+
+    @ApiOperation({summary: 'Выйти'})
+    @ApiCookieAuth('refreshToken')
+    @Public()
+    @UseGuards(JwtRefreshTokenGuard)
+    @Get('/sign-out')
+    async signOut(
+        @Req() request: RequestWithUserAndCookieRefreshToken,
+        @Res({passthrough: true}) response: Response
+    ): Promise<void> {
+
+        await this.accountService.signOut(request.cookies.refreshToken)
+        response.clearCookie('refreshToken', {path: '/account/refresh'})
+        response.clearCookie('refreshToken', {path: '/account/sign-out'})
 
     }
 

@@ -19,5 +19,5 @@ export interface RequestWithCookieRefreshToken extends Request {
 
 export interface RequestWithUserAndCookieRefreshToken extends Request {
     user: Payload
-    cookie: CookieRefreshToken
+    cookies: CookieRefreshToken
 }

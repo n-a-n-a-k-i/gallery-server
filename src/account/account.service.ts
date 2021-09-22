@@ -32,9 +32,16 @@ export class AccountService {
         const payload = this.generatePayload(userModel)
         const token = this.generateToken(payload)
 
-        await this.refreshTokenService.update(oldRefreshToken, token.refreshToken)
+        await this.refreshTokenService.updateRefreshToken(oldRefreshToken, token.refreshToken)
 
         return token
+
+    }
+
+    async signOut(refreshToken: string): Promise<void> {
+
+        await this.refreshTokenService.removeByRefreshToken(refreshToken)
+        await this.refreshTokenService.removeExpired()
 
     }
 

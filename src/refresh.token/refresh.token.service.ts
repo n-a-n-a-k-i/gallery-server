@@ -35,9 +35,11 @@ export class RefreshTokenService {
     }
 
     async findByUser(user): Promise<RefreshTokenModel[]> {
+
         return await this.refreshTokenModel.findAll({
             where: {user}
         })
+
     }
 
     async findByRefreshToken(refreshToken: string): Promise<RefreshTokenModel> {
@@ -50,7 +52,7 @@ export class RefreshTokenService {
 
     }
 
-    async update(oldRefreshToken, newRefreshToken): Promise<RefreshTokenModel> {
+    async updateRefreshToken(oldRefreshToken, newRefreshToken): Promise<RefreshTokenModel> {
 
         const refreshTokenModel = await this.findByRefreshToken(oldRefreshToken)
 
@@ -62,6 +64,16 @@ export class RefreshTokenService {
         refreshTokenModel.expiresIn = this.generateExpiresIn()
 
         return refreshTokenModel.save()
+
+    }
+
+    async removeByRefreshToken(refreshToken: string): Promise<void> {
+
+        const value = this.hashRefreshToken(refreshToken)
+
+        await this.refreshTokenModel.destroy({
+            where: {value}
+        })
 
     }
 
