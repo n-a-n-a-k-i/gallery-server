@@ -42,7 +42,7 @@ export class AccountController {
 
     @ApiOperation({summary: 'Обновить токен'})
     @ApiResponse({type: AccessTokenDto})
-    @ApiCookieAuth('refresh-token')
+    @ApiCookieAuth('refreshToken')
     @Public()
     @UseGuards(JwtRefreshTokenGuard)
     @Get('/refresh')

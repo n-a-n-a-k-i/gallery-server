@@ -3,15 +3,15 @@ import {Strategy} from "passport-local";
 import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {UserService} from "../../user/user.service";
 import * as bcrypt from 'bcrypt'
-import {Payload} from "../../refresh.token/interface/payload.interface";
-import {RefreshTokenService} from "../../refresh.token/refresh.token.service";
+import {Payload} from "../interface/payload.interface";
+import {AccountService} from "../account.service";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
 
     constructor(
         private userService: UserService,
-        private refreshTokenService: RefreshTokenService
+        private accountService: AccountService
     ) {
         super();
     }
@@ -32,7 +32,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
             throw new UnauthorizedException('Неверное имя пользователя или пароль')
         }
 
-        return this.refreshTokenService.generatePayload(userModel)
+        return this.accountService.generatePayload(userModel)
 
     }
 

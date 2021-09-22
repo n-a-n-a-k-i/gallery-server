@@ -3,7 +3,7 @@ import {UserService} from "./user.service";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {UserDto} from "./dto/user.dto";
 import {UserCreateDto} from "./dto/user.create.dto";
-import {Permissions} from "../account/decorator/permission.decorator";
+import {Permissions} from "../account/decorator/permissions.decorator";
 import {Permission} from "../account/enum/permission.enum";
 
 @ApiTags('Пользователь')
@@ -15,7 +15,7 @@ export class UserController {
 
     @ApiOperation({summary: 'Создание пользователя'})
     @ApiResponse({type: UserDto})
-    @ApiBearerAuth('access-token')
+    @ApiBearerAuth('accessToken')
     @Permissions(Permission.USER_CREATE)
     @Post()
     async create(@Body() userCreateDto: UserCreateDto): Promise<UserDto> {
@@ -25,7 +25,7 @@ export class UserController {
 
     @ApiOperation({summary: 'Получить всех пользователей'})
     @ApiResponse({type: [UserDto]})
-    @ApiBearerAuth('access-token')
+    @ApiBearerAuth('accessToken')
     @Get()
     async findAll(): Promise<UserDto[]> {
         const userModels = await this.userService.findAll()

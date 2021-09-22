@@ -2,7 +2,7 @@ import {CanActivate, ExecutionContext, ForbiddenException, Injectable} from "@ne
 import {Observable} from "rxjs";
 import {Reflector} from "@nestjs/core";
 import {Permission} from "../enum/permission.enum";
-import {PERMISSION_KEY} from "../decorator/permission.decorator";
+import {PERMISSION_KEY} from "../decorator/permissions.decorator";
 import {RequestUser} from "../interface/request.user.interface";
 
 @Injectable()

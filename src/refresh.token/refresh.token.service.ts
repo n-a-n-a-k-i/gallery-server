@@ -1,9 +1,5 @@
 import {Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
-import {UserModel} from "../user/model/user.model";
-import {Payload} from "./interface/payload.interface";
-import {JwtService} from "@nestjs/jwt";
-import {Token} from "./interface/token.interface";
 import {Op, UniqueConstraintError} from "sequelize";
 import {RefreshTokenModel} from "./model/refresh.token.model";
 import {createHash} from "crypto";
@@ -13,23 +9,8 @@ export class RefreshTokenService {
 
     constructor(
         @InjectModel(RefreshTokenModel)
-        private refreshTokenModel: typeof RefreshTokenModel,
-        private jwtService: JwtService
+        private refreshTokenModel: typeof RefreshTokenModel
     ) {
-    }
-
-    async findAll(): Promise<RefreshTokenModel[]> {
-        return await this.refreshTokenModel.findAll()
-    }
-
-    async findByRefreshToken(refreshToken: string): Promise<RefreshTokenModel> {
-
-        const value = this.hashRefreshToken(refreshToken)
-
-        return await this.refreshTokenModel.findOne({
-            where: {value}
-        })
-
     }
 
     async create(refreshToken: string, user: string): Promise<RefreshTokenModel> {
@@ -50,6 +31,22 @@ export class RefreshTokenService {
             throw new InternalServerErrorException('Ошибка при создании токена обновления')
 
         }
+
+    }
+
+    async findByUser(user): Promise<RefreshTokenModel[]> {
+        return await this.refreshTokenModel.findAll({
+            where: {user}
+        })
+    }
+
+    async findByRefreshToken(refreshToken: string): Promise<RefreshTokenModel> {
+
+        const value = this.hashRefreshToken(refreshToken)
+
+        return await this.refreshTokenModel.findOne({
+            where: {value}
+        })
 
     }
 
@@ -81,29 +78,6 @@ export class RefreshTokenService {
         if (total) console.log(`Удалено токенов: ${total}`)
 
         return total
-
-    }
-
-    generatePayload(userModel: UserModel): Payload {
-        return {
-            id: userModel.id,
-            permissions: userModel.permissions.map(permission => permission.value)
-        }
-    }
-
-    generateToken(payload: Payload): Token {
-
-        const accessToken = this.jwtService.sign(payload, {
-            secret: process.env.JWT_ACCESS_TOKEN_SECRET,
-            expiresIn: `${eval(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME)}s`
-        })
-
-        const refreshToken = this.jwtService.sign(payload, {
-            secret: process.env.JWT_REFRESH_TOKEN_SECRET,
-            expiresIn: `${eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME)}s`
-        })
-
-        return {accessToken, refreshToken}
 
     }
 
