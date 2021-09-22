@@ -45,7 +45,7 @@ export class UserService {
         })
     }
 
-    async findByUsername(username: string): Promise<UserModel | undefined> {
+    async findByUsername(username: string): Promise<UserModel> {
         const userModel = await this.userModel.findOne({
             where: {username},
             include: [{

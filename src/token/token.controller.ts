@@ -1,7 +1,7 @@
 import {Controller, Get} from '@nestjs/common';
 import {TokenService} from "./token.service";
 import {TokenDto} from "./dto/token.dto";
-import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 
 @ApiTags('Токен')
 @Controller('token')
@@ -12,6 +12,7 @@ export class TokenController {
 
     @ApiOperation({summary: 'Получить все токены'})
     @ApiResponse({type: [TokenDto]})
+    @ApiBearerAuth('access-token')
     @Get()
     async findAll(): Promise<TokenDto[]> {
         const tokenModels = await this.tokenService.findAll()

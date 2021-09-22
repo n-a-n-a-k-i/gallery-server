@@ -4,7 +4,7 @@ import {ExtractJwt, Strategy} from "passport-jwt";
 import {Payload} from "../../token/interface/payload.interface";
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtAccessTokenStrategy extends PassportStrategy(Strategy, 'jwt-access-token') {
 
     constructor() {
         super({
@@ -14,7 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: Payload) {
+    async validate(payload: Payload): Promise<Payload> {
         return payload
     }
 

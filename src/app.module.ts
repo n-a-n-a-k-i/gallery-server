@@ -5,7 +5,7 @@ import {ConfigModule} from "@nestjs/config";
 import {UserModel} from "./user/model/user.model";
 import {AccountModule} from './account/account.module';
 import {APP_GUARD} from "@nestjs/core";
-import {JwtAuthGuard} from "./account/guard/jwt.auth.guard";
+import {JwtAccessTokenGuard} from "./account/guard/jwt.access.token.guard";
 import {PermissionModel} from "./permission/model/permission.model";
 import {UserPermissionModel} from "./account/model/user.permission.model";
 import {PermissionGuard} from "./account/guard/permission.guard";
@@ -18,7 +18,7 @@ import {TokenModel} from "./token/model/token.model";
     providers: [
         {
             provide: APP_GUARD,
-            useClass: JwtAuthGuard
+            useClass: JwtAccessTokenGuard
         },
         {
             provide: APP_GUARD,

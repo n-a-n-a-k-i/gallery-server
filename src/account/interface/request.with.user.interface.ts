@@ -1,6 +1,6 @@
 import {Request} from "express";
-import {UserModel} from "../../user/model/user.model";
+import {Payload} from "../../token/interface/payload.interface";
 
 export interface RequestWithUser extends Request {
-    user: UserModel
+    user: Payload
 }

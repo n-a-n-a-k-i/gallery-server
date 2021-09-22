@@ -1,10 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 
-export class AccountSignInResponseDto {
-
-    constructor(token: string) {
-        this.token = token
-    }
+export class AccessTokenDto {
 
     @ApiProperty({description: 'Токен доступа', example: 'xxxxx.yyyyy.zzzzz'})
     readonly token: string

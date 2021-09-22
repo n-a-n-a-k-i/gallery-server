@@ -1,4 +1,4 @@
-import {Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
+import {Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {TokenModel} from "./model/token.model";
 import {UserModel} from "../user/model/user.model";
@@ -26,6 +26,16 @@ export class TokenService {
             console.log(error)
         }
         return await this.tokenModel.findAll()
+    }
+
+    async findByValue(value: string): Promise<TokenModel> {
+        const tokenModel = await this.tokenModel.findOne({
+            where: {value}
+        })
+        if (!tokenModel) {
+            throw new NotFoundException('Токен не найден')
+        }
+        return tokenModel
     }
 
     async create(token: string, user: string) {
@@ -95,12 +105,14 @@ export class TokenService {
 
     }
 
-    generate(userModel: UserModel): Token {
-
-        const payload: Payload = {
+    generatePayload(userModel: UserModel): Payload {
+        return {
             id: userModel.id,
             permissions: userModel.permissions.map(permission => permission.value)
         }
+    }
+
+    generateToken(payload: Payload): Token {
 
         const access = this.jwtService.sign(payload, {
             secret: process.env.JWT_ACCESS_TOKEN_SECRET,

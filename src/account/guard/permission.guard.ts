@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
 import {Reflector} from "@nestjs/core";
 import {Permission} from "../enum/permission.enum";
 import {PERMISSION_KEY} from "../decorator/permission.decorator";
+import {RequestWithUser} from "../interface/request.with.user.interface";
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
@@ -21,8 +22,8 @@ export class PermissionGuard implements CanActivate {
             return true
         }
 
-        const {user} = context.switchToHttp().getRequest()
-        const success = permissions.some(permission => user.permissions?.includes(permission))
+        const {user} = context.switchToHttp().getRequest<RequestWithUser>()
+        const success = permissions.some(permission => user.permissions.includes(permission))
 
         if (!success) {
             throw new ForbiddenException(`Недостаточно прав: ${permissions.join()}`)

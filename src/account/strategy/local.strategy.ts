@@ -1,20 +1,32 @@
 import {PassportStrategy} from "@nestjs/passport";
 import {Strategy} from "passport-local";
-import {AccountService} from "../account.service";
-import {Injectable} from "@nestjs/common";
-import {UserModel} from "../../user/model/user.model";
-import {AccountSignInRequestDto} from "../dto/account.sign.in.request.dto";
+import {Injectable, UnauthorizedException} from "@nestjs/common";
+import {UserService} from "../../user/user.service";
+import * as bcrypt from 'bcrypt'
+import {Payload} from "../../token/interface/payload.interface";
+import {TokenService} from "../../token/token.service";
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
+export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
 
-    constructor(private accountService: AccountService) {
+    constructor(
+        private userService: UserService,
+        private tokenService: TokenService
+    ) {
         super();
     }
 
-    async validate(username: string, password: string): Promise<UserModel> {
-        const accountSignInRequestDto = new AccountSignInRequestDto(username, password)
-        return await this.accountService.validate(accountSignInRequestDto)
+    async validate(username: string, password: string): Promise<Payload> {
+
+        const userModel = await this.userService.findByUsername(username)
+        const success = await bcrypt.compare(password, userModel.password)
+
+        if (!success) {
+            throw new UnauthorizedException('Не верный пароль')
+        }
+
+        return this.tokenService.generatePayload(userModel)
+
     }
 
 }

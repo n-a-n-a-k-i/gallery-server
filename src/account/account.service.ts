@@ -1,10 +1,8 @@
-import {Injectable, UnauthorizedException} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {UserService} from "../user/user.service";
-import * as bcrypt from 'bcrypt'
-import {UserModel} from "../user/model/user.model";
-import {AccountSignInRequestDto} from "./dto/account.sign.in.request.dto";
 import {TokenService} from "../token/token.service";
 import {Token} from "../token/interface/token.interface";
+import {Payload} from "../token/interface/payload.interface";
 
 @Injectable()
 export class AccountService {
@@ -15,22 +13,9 @@ export class AccountService {
     ) {
     }
 
-    async validate(accountSignInRequestDto: AccountSignInRequestDto): Promise<UserModel> {
-
-        const userModel = await this.userService.findByUsername(accountSignInRequestDto.username)
-        const success = await bcrypt.compare(accountSignInRequestDto.password, userModel.password)
-
-        if (!success) {
-            throw new UnauthorizedException('Не верный пароль')
-        }
-
-        return userModel
-
-    }
-
-    async signIn(userModel: UserModel): Promise<Token> {
-        const token = this.tokenService.generate(userModel)
-        await this.tokenService.create(token.refresh, userModel.id)
+    async signIn(payload: Payload): Promise<Token> {
+        const token = this.tokenService.generateToken(payload)
+        await this.tokenService.create(token.refresh, payload.id)
         return token
     }
 
