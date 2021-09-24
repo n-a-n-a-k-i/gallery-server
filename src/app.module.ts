@@ -12,6 +12,7 @@ import {PermissionGuard} from "./account/guard/permission.guard";
 import {PermissionModule} from './permission/permission.module';
 import {RefreshTokenModel} from "./refresh.token/model/refresh.token.model";
 import {RefreshTokenModule} from "./refresh.token/refresh.token.module";
+import { PhotoModule } from './photo/photo.module';
 
 @Module({
     controllers: [],
@@ -45,7 +46,8 @@ import {RefreshTokenModule} from "./refresh.token/refresh.token.module";
         AccountModule,
         UserModule,
         PermissionModule,
-        RefreshTokenModule
+        RefreshTokenModule,
+        PhotoModule
     ]
 })
 export class AppModule {

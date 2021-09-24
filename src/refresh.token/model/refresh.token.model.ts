@@ -27,7 +27,7 @@ export class RefreshTokenModel extends Model {
 
     @ApiProperty({description: 'Пользователь', example: '00000000-0000-0000-0000-000000000000'})
     @ForeignKey(() => UserModel)
-    @Column({type: UUID})
+    @Column({comment: 'Пользователь', type: UUID, allowNull: false})
     user: string
 
     @BelongsTo(() => UserModel)

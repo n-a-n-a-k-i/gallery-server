@@ -26,7 +26,7 @@ JWT_REFRESH_TOKEN_EXPIRATION_TIME=60*60*24*30
 
 ## База данных
 
-Примет в docker:
+Пример в docker:
 
 ```shell
 docker run \
@@ -38,6 +38,24 @@ docker run \
   -e POSTGRES_USER=gallery \
   -e POSTGRES_PASSWORD=gallery \
   -d postgres
+```
+
+Пример dblink:
+
+```postgresql
+INSERT INTO photo
+SELECT *, '00000000-0000-0000-0000-000000000000'
+FROM dblink(
+    'dbname=gallery user=gallery',
+    'SELECT id, hash, date_create AS dateCreate, date_import AS dateImport, thumbnail, preview FROM gallery.public.photo LIMIT 3'
+) AS p(
+    id uuid,
+    hash text,
+    dateCreate timestamp,
+    dateImport timestamp,
+    thumbnail bytea,
+    preview bytea
+);
 ```
 
 ## Postmap
