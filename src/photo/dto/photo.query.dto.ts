@@ -12,6 +12,6 @@ export class PhotoQueryDto {
 
     readonly days: number[] = []
 
-    readonly lastDate: number = 0
+    lastDate: number = Date.now()
 
 }

@@ -41,33 +41,7 @@ NEXTCLOUD_WEBDAV=https://cloud.example.org/remote.php/dav
 Пример в docker:
 
 ```shell
-docker run \
-  --name gallery_db \
-  --restart=always \
-  -p 5555:5432 \
-  -v gallery_db:/var/lib/postgresql/data \
-  -e POSTGRES_DB=gallery \
-  -e POSTGRES_USER=gallery \
-  -e POSTGRES_PASSWORD=gallery \
-  -d postgres
-```
-
-Пример dblink:
-
-```postgresql
-INSERT INTO photo
-SELECT *, '00000000-0000-0000-0000-000000000000'
-FROM dblink(
-    'dbname=gallery user=gallery',
-    'SELECT id, hash, date_create AS dateCreate, date_import AS dateImport, thumbnail, preview FROM gallery.public.photo LIMIT 3'
-) AS p(
-    id uuid,
-    hash text,
-    dateCreate timestamp,
-    dateImport timestamp,
-    thumbnail bytea,
-    preview bytea
-);
+docker run --name gallery_database --restart=always -p 55432:5432 -v gallery_database:/var/lib/postgresql/data -e POSTGRES_DB=gallery -e POSTGRES_USER=gallery -e POSTGRES_PASSWORD=gallery -d postgres
 ```
 
 ## Postmap
@@ -77,7 +51,7 @@ FROM dblink(
 ```js
 (() => {
 
-    const user = {username: 'user', password: '12345678'}
+    const user = {username: 'gallery', password: 'gallery'}
 
     /**
      * Удаление переменной с токеном доступа

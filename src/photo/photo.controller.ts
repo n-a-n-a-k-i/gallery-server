@@ -20,7 +20,7 @@ export class PhotoController {
 
         console.log(photoQueryDto)
 
-        const photoModels = await this.photoService.findAll()
+        const photoModels = await this.photoService.findAll(photoQueryDto)
 
         return photoModels.map(photoModel => new PhotoListDto(photoModel))
 
