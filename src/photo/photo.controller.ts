@@ -16,11 +16,8 @@ export class PhotoController {
     @ApiBearerAuth('accessToken')
     @Get()
     async findAll(@Query() photoQueryDto: PhotoQueryDto) {
-
         const photoModels = await this.photoService.findAll(photoQueryDto)
-
         return photoModels.map(photoModel => new PhotoListDto(photoModel))
-
     }
 
 }

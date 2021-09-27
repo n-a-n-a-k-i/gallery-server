@@ -1,23 +1,30 @@
 import {ApiProperty} from "@nestjs/swagger";
+import {IsString, MinLength} from "class-validator";
 
 export class UserCreateDto {
 
     @ApiProperty({description: 'Имя пользователя', example: 'user'})
+    @MinLength(4)
     readonly username: string
 
     @ApiProperty({description: 'Пароль', example: 'bcrypt#12345678'})
+    @MinLength(8)
     readonly password: string
 
     @ApiProperty({description: 'Имя пользователя в облаке', example: 'user'})
-    readonly cloudUsername: string
+    @IsString()
+    readonly cloudUsername: string = ''
 
     @ApiProperty({description: 'Пароль в облаке', example: '12345678'})
-    readonly cloudPassword: string
+    @IsString()
+    readonly cloudPassword: string = ''
 
     @ApiProperty({description: 'Директория сканирования в облаке', example: 'Телефон/Фотографии'})
-    readonly cloudDirScan: string
+    @IsString()
+    readonly cloudDirScan: string = ''
 
     @ApiProperty({description: 'Директория синхронизации в облаке', example: 'Семья/Фотографии'})
-    readonly cloudDirSync: string
+    @IsString()
+    readonly cloudDirSync: string = ''
 
 }
