@@ -46,7 +46,7 @@ export class PhotoService {
                     ...conditions,
                     {
                         [photoQueryDto.sortColumn]: {
-                            [photoQueryDto.sortDirection === 'ASC' ? Op.gt : Op.lt]: new Date(photoQueryDto.lastDate)
+                            [photoQueryDto.sortDirection === 'ASC' ? Op.gt : Op.lt]: new Date(photoQueryDto.timeStart)
                         }
                     }
                 ]
