@@ -1,10 +1,10 @@
-import {Module} from "@nestjs/common";
+import {Module, ValidationPipe} from "@nestjs/common";
 import {SequelizeModule} from "@nestjs/sequelize";
 import {UserModule} from './user/user.module';
 import {ConfigModule} from "@nestjs/config";
 import {UserModel} from "./user/model/user.model";
 import {AccountModule} from './account/account.module';
-import {APP_GUARD} from "@nestjs/core";
+import {APP_GUARD, APP_PIPE} from "@nestjs/core";
 import {JwtAccessTokenGuard} from "./account/guard/jwt.access.token.guard";
 import {PermissionModel} from "./permission/model/permission.model";
 import {UserPermissionModel} from "./user.permission/model/user.permission.model";
@@ -17,6 +17,14 @@ import { PhotoModule } from './photo/photo.module';
 @Module({
     controllers: [],
     providers: [
+        {
+            provide: APP_PIPE,
+            useValue: new ValidationPipe({
+                transform: true,
+                whitelist: true,
+                forbidNonWhitelisted: true
+            })
+        },
         {
             provide: APP_GUARD,
             useClass: JwtAccessTokenGuard

@@ -1,4 +1,4 @@
-import {Controller, Get, Query, UsePipes, ValidationPipe} from '@nestjs/common';
+import {Controller, Get, Query} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {PhotoService} from "./photo.service";
 import {PhotoListDto} from "./dto/photo.list.dto";
@@ -15,10 +15,7 @@ export class PhotoController {
     @ApiResponse({type: [PhotoListDto]})
     @ApiBearerAuth('accessToken')
     @Get()
-    @UsePipes(new ValidationPipe({transform: true}))
     async findAll(@Query() photoQueryDto: PhotoQueryDto) {
-
-        console.log(photoQueryDto)
 
         const photoModels = await this.photoService.findAll(photoQueryDto)
 

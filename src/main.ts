@@ -5,8 +5,8 @@ import * as cookieParser from 'cookie-parser';
 
 (async () => {
 
+    const port = Number(process.env.HTTP_PORT)
     const app = await NestFactory.create(AppModule, {cors: true})
-    const PORT = Number(process.env.HTTP_PORT)
 
     app.use(cookieParser())
     SwaggerModule.setup('/', app, SwaggerModule.createDocument(app, new DocumentBuilder()
@@ -16,6 +16,6 @@ import * as cookieParser from 'cookie-parser';
         .build()
     ))
 
-    await app.listen(PORT, () => console.log(`REST API: http://localhost:${PORT}`))
+    await app.listen(port, () => console.log(`REST API: http://localhost:${port}`))
 
 })()
