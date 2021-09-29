@@ -10,8 +10,8 @@ export class PhotoQueryDto {
     @Type(() => Number)
     @IsInt()
     @Min(1)
-    @Max(20)
-    readonly limit: number = 20
+    @Max(100)
+    readonly limit: number = 5
 
     @ApiProperty({description: 'Колонка для сортировки', example: 'dateCreate', required: false, enum: SortColumn})
     @IsEnum(SortColumn)

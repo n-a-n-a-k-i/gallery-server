@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {PhotoModel} from "./model/photo.model";
 import {PhotoQueryDto} from "./dto/photo.query.dto";
@@ -56,6 +56,38 @@ export class PhotoService {
             ],
             limit: photoQueryDto.limit
         })
+
+    }
+
+    async findThumbnail(id: string): Promise<Buffer> {
+
+        const photoModel: PhotoModel = await this.photoModel.findByPk(id, {
+            attributes: {
+                exclude: ['id', 'hash', 'dateCreate', 'dateImport', 'preview', 'user']
+            }
+        })
+
+        if (!photoModel) {
+            throw new NotFoundException('Фотография не найдена')
+        }
+
+        return photoModel.thumbnail
+
+    }
+
+    async findPreview(id: string): Promise<Buffer> {
+
+        const photoModel: PhotoModel = await this.photoModel.findByPk(id, {
+            attributes: {
+                exclude: ['id', 'hash', 'dateCreate', 'dateImport', 'thumbnail', 'user']
+            }
+        })
+
+        if (!photoModel) {
+            throw new NotFoundException('Фотография не найдена')
+        }
+
+        return photoModel.preview
 
     }
 
