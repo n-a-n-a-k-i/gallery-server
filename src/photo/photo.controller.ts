@@ -6,6 +6,8 @@ import {Response} from "express";
 import {PhotoDto} from "./dto/photo.dto";
 import {PhotoFindAllDto} from "./dto/photo.find.all.dto";
 import {PhotoFindTotalDto} from "./dto/photo.find.total.dto";
+import {PhotoFindTotalDatePartDto} from "./dto/photo.find.total.date.part.dto";
+import {PhotoTotalDatePartDto} from "./dto/photo.total.date.part.dto";
 
 @ApiTags('Фотография')
 @Controller('photo')
@@ -33,6 +35,15 @@ export class PhotoController {
         @Query() photoFindTotalDto: PhotoFindTotalDto
     ): Promise<number> {
         return await this.photoService.findTotal(photoFindTotalDto)
+    }
+
+    @ApiOperation({summary: 'Получить количество части даты'})
+    @ApiBearerAuth('accessToken')
+    @Get('/total/date/part')
+    async findTotalDatePart(
+        @Query() photoFindTotalDatePartDto: PhotoFindTotalDatePartDto
+    ): Promise<PhotoTotalDatePartDto[]> {
+        return await this.photoService.findTotalDatePart(photoFindTotalDatePartDto)
     }
 
     @Get('/thumbnail/:id')

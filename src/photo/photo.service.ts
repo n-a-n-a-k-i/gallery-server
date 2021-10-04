@@ -4,6 +4,8 @@ import {PhotoModel} from "./model/photo.model";
 import {Op, where, fn, col, WhereOptions} from "sequelize";
 import {PhotoFindAllDto} from "./dto/photo.find.all.dto";
 import {PhotoFindTotalDto} from "./dto/photo.find.total.dto";
+import {PhotoFindTotalDatePartDto} from "./dto/photo.find.total.date.part.dto";
+import {PhotoTotalDatePartDto} from "./dto/photo.total.date.part.dto";
 
 @Injectable()
 export class PhotoService {
@@ -17,7 +19,7 @@ export class PhotoService {
     async findAll(photoFindAllDto: PhotoFindAllDto): Promise<PhotoModel[]> {
 
         const datePartConditions = this.getDatePartConditions(photoFindAllDto)
-        const {timeStart, limit, sortColumn, sortDirection} = photoFindAllDto
+        const {timeStart, limit, dateColumn, sortDirection} = photoFindAllDto
 
         return await this.photoModel.findAll({
             attributes: {
@@ -27,14 +29,14 @@ export class PhotoService {
                 [Op.and]: [
                     ...datePartConditions,
                     {
-                        [sortColumn]: {
+                        [dateColumn]: {
                             [sortDirection === 'ASC' ? Op.gt : Op.lt]: new Date(timeStart)
                         }
                     }
                 ]
             },
             order: [
-                [sortColumn, sortDirection]
+                [dateColumn, sortDirection]
             ],
             limit: limit
         })
@@ -53,27 +55,21 @@ export class PhotoService {
 
     }
 
-    getDatePartConditions(photoFindTotalDto: PhotoFindTotalDto): WhereOptions<WhereOptions>[] {
+    async findTotalDatePart(findTotalDatePartDto: PhotoFindTotalDatePartDto): Promise<PhotoTotalDatePartDto[]> {
 
-        const conditions = []
-        const dateParts = ['year', 'month', 'day']
-
-        dateParts.forEach(datePart => {
-
-            const items = photoFindTotalDto[datePart + 's']
-
-            if (items.length) conditions.push(
-                where(
-                    fn('date_part', datePart, col('dateCreate')),
-                    {
-                        [Op.in]: items
-                    }
-                )
-            )
-
+        const {dateColumn, datePart} = findTotalDatePartDto
+        const photoModels = await this.photoModel.findAll({
+            attributes: [
+                [fn('distinct', fn('date_part', datePart, col(dateColumn))), 'value'],
+                [fn('count', col('id')), 'total']
+            ],
+            group: fn('date_part', datePart, col(dateColumn)),
+            order: [
+                col('value')
+            ]
         })
 
-        return conditions
+        return photoModels.map(photoModel => new PhotoTotalDatePartDto(photoModel))
 
     }
 
@@ -106,6 +102,30 @@ export class PhotoService {
         }
 
         return photoModel.preview
+
+    }
+
+    getDatePartConditions(photoFindTotalDto: PhotoFindTotalDto): WhereOptions<WhereOptions>[] {
+
+        const conditions = []
+        const dateParts = ['year', 'month', 'day']
+
+        dateParts.forEach(datePart => {
+
+            const items = photoFindTotalDto[datePart + 's']
+
+            if (items.length) conditions.push(
+                where(
+                    fn('date_part', datePart, col('dateCreate')),
+                    {
+                        [Op.in]: items
+                    }
+                )
+            )
+
+        })
+
+        return conditions
 
     }
 
