@@ -1,8 +1,9 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {PhotoModel} from "./model/photo.model";
-import {PhotoQueryDto} from "./dto/photo.query.dto";
-import {Op, where, fn, col} from "sequelize";
+import {Op, where, fn, col, WhereOptions} from "sequelize";
+import {PhotoQueryFindAllDto} from "./dto/photo.query.find.all.dto";
+import {PhotoQueryFindTotalDto} from "./dto/photo.query.find.total.dto";
 
 @Injectable()
 export class PhotoService {
@@ -13,29 +14,10 @@ export class PhotoService {
     ) {
     }
 
-    async findAll(photoQueryDto: PhotoQueryDto): Promise<PhotoModel[]> {
+    async findAll(photoQueryFindAllDto: PhotoQueryFindAllDto): Promise<PhotoModel[]> {
 
-        const conditions = []
-        const dateParts = ['year', 'month', 'day']
-
-        dateParts.forEach(datePart => {
-
-            const key = datePart + 's'
-
-            if (photoQueryDto[key].length) {
-
-                conditions.push(
-                    where(
-                        fn('date_part', datePart, col('dateCreate')),
-                        {
-                            [Op.in]: photoQueryDto[key]
-                        }
-                    )
-                )
-
-            }
-
-        })
+        const datePartConditions = this.getDatePartConditions(photoQueryFindAllDto)
+        const {timeStart, limit, sortColumn, sortDirection} = photoQueryFindAllDto
 
         return await this.photoModel.findAll({
             attributes: {
@@ -43,19 +25,55 @@ export class PhotoService {
             },
             where: {
                 [Op.and]: [
-                    ...conditions,
+                    ...datePartConditions,
                     {
-                        [photoQueryDto.sortColumn]: {
-                            [photoQueryDto.sortDirection === 'ASC' ? Op.gt : Op.lt]: new Date(photoQueryDto.timeStart)
+                        [sortColumn]: {
+                            [sortDirection === 'ASC' ? Op.gt : Op.lt]: new Date(timeStart)
                         }
                     }
                 ]
             },
             order: [
-                [photoQueryDto.sortColumn, photoQueryDto.sortDirection]
+                [sortColumn, sortDirection]
             ],
-            limit: photoQueryDto.limit
+            limit: limit
         })
+
+    }
+
+    async findTotal(photoQueryFindTotalDto: PhotoQueryFindTotalDto): Promise<number> {
+
+        const datePartConditions = this.getDatePartConditions(photoQueryFindTotalDto)
+
+        return await this.photoModel.count({
+            where: {
+                [Op.and]: datePartConditions
+            }
+        })
+
+    }
+
+    getDatePartConditions(photoQueryFindTotalDto: PhotoQueryFindTotalDto): WhereOptions<WhereOptions>[] {
+
+        const conditions = []
+        const dateParts = ['year', 'month', 'day']
+
+        dateParts.forEach(datePart => {
+
+            const items = photoQueryFindTotalDto[datePart + 's']
+
+            if (items.length) conditions.push(
+                where(
+                    fn('date_part', datePart, col('dateCreate')),
+                    {
+                        [Op.in]: items
+                    }
+                )
+            )
+
+        })
+
+        return conditions
 
     }
 
