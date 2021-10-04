@@ -3,9 +3,9 @@ import {Type} from "class-transformer";
 import {SortColumn} from "../enum/sort.column.enum";
 import {SortDirection} from "../enum/sort.direction.enum";
 import {ApiProperty} from "@nestjs/swagger";
-import {PhotoQueryFindTotalDto} from "./photo.query.find.total.dto";
+import {PhotoFindTotalDto} from "./photo.find.total.dto";
 
-export class PhotoQueryFindAllDto extends PhotoQueryFindTotalDto {
+export class PhotoFindAllDto extends PhotoFindTotalDto {
 
     @ApiProperty({description: 'Время начала', example: '1632748863981', required: false})
     @Type(() => Number)

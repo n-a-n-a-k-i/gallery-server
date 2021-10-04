@@ -1,7 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {PhotoModel} from "../model/photo.model";
 
-export class PhotoListDto {
+export class PhotoDto {
 
     constructor(photoModel: PhotoModel) {
         this.id = photoModel.id

@@ -2,8 +2,8 @@ import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {PhotoModel} from "./model/photo.model";
 import {Op, where, fn, col, WhereOptions} from "sequelize";
-import {PhotoQueryFindAllDto} from "./dto/photo.query.find.all.dto";
-import {PhotoQueryFindTotalDto} from "./dto/photo.query.find.total.dto";
+import {PhotoFindAllDto} from "./dto/photo.find.all.dto";
+import {PhotoFindTotalDto} from "./dto/photo.find.total.dto";
 
 @Injectable()
 export class PhotoService {
@@ -14,10 +14,10 @@ export class PhotoService {
     ) {
     }
 
-    async findAll(photoQueryFindAllDto: PhotoQueryFindAllDto): Promise<PhotoModel[]> {
+    async findAll(photoFindAllDto: PhotoFindAllDto): Promise<PhotoModel[]> {
 
-        const datePartConditions = this.getDatePartConditions(photoQueryFindAllDto)
-        const {timeStart, limit, sortColumn, sortDirection} = photoQueryFindAllDto
+        const datePartConditions = this.getDatePartConditions(photoFindAllDto)
+        const {timeStart, limit, sortColumn, sortDirection} = photoFindAllDto
 
         return await this.photoModel.findAll({
             attributes: {
@@ -41,9 +41,9 @@ export class PhotoService {
 
     }
 
-    async findTotal(photoQueryFindTotalDto: PhotoQueryFindTotalDto): Promise<number> {
+    async findTotal(photoFindTotalDto: PhotoFindTotalDto): Promise<number> {
 
-        const datePartConditions = this.getDatePartConditions(photoQueryFindTotalDto)
+        const datePartConditions = this.getDatePartConditions(photoFindTotalDto)
 
         return await this.photoModel.count({
             where: {
@@ -53,14 +53,14 @@ export class PhotoService {
 
     }
 
-    getDatePartConditions(photoQueryFindTotalDto: PhotoQueryFindTotalDto): WhereOptions<WhereOptions>[] {
+    getDatePartConditions(photoFindTotalDto: PhotoFindTotalDto): WhereOptions<WhereOptions>[] {
 
         const conditions = []
         const dateParts = ['year', 'month', 'day']
 
         dateParts.forEach(datePart => {
 
-            const items = photoQueryFindTotalDto[datePart + 's']
+            const items = photoFindTotalDto[datePart + 's']
 
             if (items.length) conditions.push(
                 where(
