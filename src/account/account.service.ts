@@ -4,7 +4,7 @@ import {Token} from "./interface/token.interface";
 import {RefreshTokenService} from "../refresh.token/refresh.token.service";
 import {UserModel} from "../user/model/user.model";
 import {JwtService} from "@nestjs/jwt";
-import {Payload} from "./interface/request.interface";
+import {Payload} from "./interface/payload.interface";
 
 @Injectable()
 export class AccountService {

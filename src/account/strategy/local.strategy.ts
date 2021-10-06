@@ -4,7 +4,7 @@ import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {UserService} from "../../user/user.service";
 import * as bcrypt from 'bcrypt'
 import {AccountService} from "../account.service";
-import {Payload} from "../interface/request.interface";
+import {Payload} from "../interface/payload.interface";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
