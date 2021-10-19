@@ -7,7 +7,8 @@ import {Response} from "express";
 import {JwtRefreshTokenGuard} from "./guard/jwt.refresh.token.guard";
 import {AccessTokenDto} from "./dto/access.token.dto";
 import {SignInDto} from "./dto/sign.in.dto";
-import {RequestWithUser, RequestWithUserAndCookieRefreshToken} from "./interface/request.interface";
+import {RequestWithUser} from "./interface/request.with.user.interface";
+import {RequestWithUserAndCookieRefreshToken} from "./interface/request.with.user.and.cookie.refresh.token.interface";
 
 @ApiTags('Аккаунт')
 @Controller('account')

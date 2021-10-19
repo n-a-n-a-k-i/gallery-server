@@ -2,7 +2,7 @@ import {Controller, Get, Req} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {RefreshTokenDto} from "./dto/refresh.token.dto";
 import {RefreshTokenService} from "./refresh.token.service";
-import {RequestWithUser} from "../account/interface/request.interface";
+import {RequestWithUser} from "../account/interface/request.with.user.interface";
 
 @ApiTags('Токен обновления')
 @Controller('refresh-token')

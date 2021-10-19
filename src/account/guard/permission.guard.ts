@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {Reflector} from "@nestjs/core";
 import {Permission} from "../enum/permission.enum";
 import {PERMISSION_KEY} from "../decorator/permissions.decorator";
-import {RequestWithUser} from "../interface/request.interface";
+import {RequestWithUser} from "../interface/request.with.user.interface";
 
 @Injectable()
 export class PermissionGuard implements CanActivate {

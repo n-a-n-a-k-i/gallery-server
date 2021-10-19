@@ -1,6 +1,5 @@
-.idea
-dist
-node_modules
-.env
-gallery-server.iml
-package-lock.json
+/.idea
+/dist
+/node_modules
+/.env
+/package-lock.json
