@@ -7,8 +7,6 @@ REST API для Gallery
 Переменные среды описать в файле `.env` в корне приложения:
 
 ```dotenv
-DEBUG=false
-
 HTTP_PORT=5000
 
 POSTGRES_HOST=localhost
@@ -44,7 +42,7 @@ NEXTCLOUD_WEBDAV=https://cloud.example.org/remote.php/dav
 docker run --name gallery_database --restart=always -p 55432:5432 -v gallery_database:/var/lib/postgresql/data -e POSTGRES_DB=gallery -e POSTGRES_USER=gallery -e POSTGRES_PASSWORD=gallery -d postgres
 ```
 
-## Postmap
+## Postman
 
 Предзапросный скрипт:
 
