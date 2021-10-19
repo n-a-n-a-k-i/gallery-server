@@ -6,7 +6,12 @@ import * as cookieParser from 'cookie-parser';
 (async () => {
 
     const port = Number(process.env.HTTP_PORT)
-    const app = await NestFactory.create(AppModule, {cors: true})
+    const app = await NestFactory.create(AppModule, {
+        cors: {
+            origin: true,
+            credentials: true
+        }
+    })
 
     app.use(cookieParser())
     SwaggerModule.setup('/', app, SwaggerModule.createDocument(app, new DocumentBuilder()
