@@ -9,6 +9,7 @@ import {AccessTokenDto} from "./dto/access.token.dto";
 import {SignInDto} from "./dto/sign.in.dto";
 import {RequestWithUser} from "./interface/request.with.user.interface";
 import {RequestWithUserAndCookieRefreshToken} from "./interface/request.with.user.and.cookie.refresh.token.interface";
+import {Token} from "./interface/token.interface";
 
 @ApiTags('Аккаунт')
 @Controller('account')
@@ -30,13 +31,9 @@ export class AccountController {
     ): Promise<AccessTokenDto> {
 
         const payload = request.user
-        const {accessToken, refreshToken} = await this.accountService.signIn(payload)
-        const maxAge = eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000
+        const token = await this.accountService.signIn(payload)
 
-        response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/refresh'})
-        response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/sign-out'})
-
-        return {accessToken}
+        return this.setToken(response, token)
 
     }
 
@@ -51,14 +48,23 @@ export class AccountController {
         @Res({passthrough: true}) response: Response
     ): Promise<AccessTokenDto> {
 
-        const {
-            accessToken,
-            refreshToken
-        } = await this.accountService.refresh(request.user, request.cookies.refreshToken)
-        const maxAge = eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000
+        const payload = request.user
+        const token = await this.accountService.refresh(payload, request.cookies.refreshToken)
 
-        response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/refresh'})
-        response.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge, path: '/account/sign-out'})
+        return this.setToken(response, token)
+
+    }
+
+    setToken(response: Response, {accessToken, refreshToken}: Token): AccessTokenDto {
+
+        const httpOnly = true;
+        const accessTime = eval(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME) * 1000;
+        const refreshTime = eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000;
+
+        response.cookie('accessToken', accessToken, {httpOnly, maxAge: accessTime, path: '/photo/thumbnail'})
+        response.cookie('accessToken', accessToken, {httpOnly, maxAge: accessTime, path: '/photo/preview'})
+        response.cookie('refreshToken', refreshToken, {httpOnly, maxAge: refreshTime, path: '/account/refresh'})
+        response.cookie('refreshToken', refreshToken, {httpOnly, maxAge: refreshTime, path: '/account/sign-out'})
 
         return {accessToken}
 
@@ -75,6 +81,8 @@ export class AccountController {
     ): Promise<void> {
 
         await this.accountService.signOut(request.cookies.refreshToken)
+        response.clearCookie('accessToken', {path: '/photo/thumbnail'})
+        response.clearCookie('accessToken', {path: '/photo/preview'})
         response.clearCookie('refreshToken', {path: '/account/refresh'})
         response.clearCookie('refreshToken', {path: '/account/sign-out'})
 
