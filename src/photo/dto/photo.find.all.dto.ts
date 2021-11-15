@@ -15,7 +15,7 @@ export class PhotoFindAllDto extends PhotoFindTotalDto {
     @ApiProperty({description: 'Количество', example: '20', required: false})
     @Type(() => Number)
     @IsInt()
-    @Min(1)
+    @Min(0)
     @Max(100)
     readonly limit: number = 5
 
