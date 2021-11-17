@@ -19,26 +19,21 @@ export class PhotoService {
     async findAll(photoFindAllDto: PhotoFindAllDto): Promise<PhotoModel[]> {
 
         const datePartConditions = this.getDatePartConditions(photoFindAllDto)
-        const {timeStart, limit, dateColumn, sortDirection} = photoFindAllDto
+        const {dateColumn, sortDirection, limit, offset} = photoFindAllDto
 
         return await this.photoModel.findAll({
             attributes: {
                 exclude: ['thumbnail', 'preview']
             },
             where: {
-                [Op.and]: [
-                    ...datePartConditions,
-                    {
-                        [dateColumn]: {
-                            [sortDirection === 'ASC' ? Op.gt : Op.lt]: new Date(timeStart)
-                        }
-                    }
-                ]
+                [Op.and]: datePartConditions
             },
             order: [
-                [dateColumn, sortDirection]
+                [dateColumn, sortDirection],
+                'id'
             ],
-            limit: limit
+            limit: limit,
+            offset: offset
         })
 
     }
