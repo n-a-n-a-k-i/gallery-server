@@ -2,7 +2,7 @@ import {ApiProperty} from "@nestjs/swagger";
 import {Transform} from "class-transformer";
 import {ArrayMaxSize, ArrayUnique, IsInt, Max, Min} from "class-validator";
 
-export class PhotoFindTotalDto {
+export class FindTotalDto {
 
     @ApiProperty({description: 'Дни', example: '24,25,26,27', required: false})
     @Transform(({value}) => value.split(',').map(text => Number(text)))

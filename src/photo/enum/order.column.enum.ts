@@ -1,4 +1,4 @@
-export enum DateColumn {
+export enum OrderColumn {
     dateCreate = 'dateCreate',
     dateImport = 'dateImport'
 }

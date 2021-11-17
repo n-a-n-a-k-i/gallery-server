@@ -4,10 +4,10 @@ import {PhotoService} from "./photo.service";
 import * as Buffer from "buffer";
 import {Response} from "express";
 import {PhotoDto} from "./dto/photo.dto";
-import {PhotoFindAllDto} from "./dto/photo.find.all.dto";
-import {PhotoFindTotalDto} from "./dto/photo.find.total.dto";
-import {PhotoFindTotalDatePartDto} from "./dto/photo.find.total.date.part.dto";
-import {PhotoTotalDatePartDto} from "./dto/photo.total.date.part.dto";
+import {FindAllDto} from "./dto/find.all.dto";
+import {FindTotalDto} from "./dto/find.total.dto";
+import {FindTotalDatePartDto} from "./dto/find.total.date.part.dto";
+import {TotalDatePartDto} from "./dto/total.date.part.dto";
 
 @ApiTags('Фотография')
 @Controller('photo')
@@ -21,9 +21,9 @@ export class PhotoController {
     @ApiBearerAuth('accessToken')
     @Get()
     async findAll(
-        @Query() photoFindAllDto: PhotoFindAllDto
+        @Query() findAllDto: FindAllDto
     ): Promise<PhotoDto[]> {
-        const photoModels = await this.photoService.findAll(photoFindAllDto)
+        const photoModels = await this.photoService.findAll(findAllDto)
         return photoModels.map(photoModel => new PhotoDto(photoModel))
     }
 
@@ -32,18 +32,18 @@ export class PhotoController {
     @ApiBearerAuth('accessToken')
     @Get('/total')
     async findTotal(
-        @Query() photoFindTotalDto: PhotoFindTotalDto
+        @Query() findTotalDto: FindTotalDto
     ): Promise<number> {
-        return await this.photoService.findTotal(photoFindTotalDto)
+        return await this.photoService.findTotal(findTotalDto)
     }
 
     @ApiOperation({summary: 'Получить количество части даты'})
     @ApiBearerAuth('accessToken')
     @Get('/total/date/part')
     async findTotalDatePart(
-        @Query() photoFindTotalDatePartDto: PhotoFindTotalDatePartDto
-    ): Promise<PhotoTotalDatePartDto[]> {
-        return await this.photoService.findTotalDatePart(photoFindTotalDatePartDto)
+        @Query() findTotalDatePartDto: FindTotalDatePartDto
+    ): Promise<TotalDatePartDto[]> {
+        return await this.photoService.findTotalDatePart(findTotalDatePartDto)
     }
 
     @Get('/thumbnail/:id')

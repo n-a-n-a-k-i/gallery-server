@@ -1,7 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {PhotoModel} from "../model/photo.model";
 
-export class PhotoTotalDatePartDto {
+export class TotalDatePartDto {
 
     constructor(photoModel: PhotoModel) {
         this.value = Number(photoModel.get('value'))

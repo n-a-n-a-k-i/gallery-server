@@ -2,10 +2,10 @@ import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {PhotoModel} from "./model/photo.model";
 import {Op, where, fn, col, WhereOptions} from "sequelize";
-import {PhotoFindAllDto} from "./dto/photo.find.all.dto";
-import {PhotoFindTotalDto} from "./dto/photo.find.total.dto";
-import {PhotoFindTotalDatePartDto} from "./dto/photo.find.total.date.part.dto";
-import {PhotoTotalDatePartDto} from "./dto/photo.total.date.part.dto";
+import {FindAllDto} from "./dto/find.all.dto";
+import {FindTotalDto} from "./dto/find.total.dto";
+import {FindTotalDatePartDto} from "./dto/find.total.date.part.dto";
+import {TotalDatePartDto} from "./dto/total.date.part.dto";
 
 @Injectable()
 export class PhotoService {
@@ -16,9 +16,9 @@ export class PhotoService {
     ) {
     }
 
-    async findAll(photoFindAllDto: PhotoFindAllDto): Promise<PhotoModel[]> {
+    async findAll(photoFindAllDto: FindAllDto): Promise<PhotoModel[]> {
 
-        const {sortColumn, sortDirection, limit, offset} = photoFindAllDto
+        const {orderColumn, orderDirection, limit, offset} = photoFindAllDto
 
         return await this.photoModel.findAll({
             attributes: {
@@ -26,7 +26,7 @@ export class PhotoService {
             },
             where: this.getWhereOptions(photoFindAllDto),
             order: [
-                [sortColumn, sortDirection],
+                [orderColumn, orderDirection],
                 'id'
             ],
             limit: limit,
@@ -35,7 +35,7 @@ export class PhotoService {
 
     }
 
-    async findTotal(photoFindTotalDto: PhotoFindTotalDto): Promise<number> {
+    async findTotal(photoFindTotalDto: FindTotalDto): Promise<number> {
 
         return await this.photoModel.count({
             where: this.getWhereOptions(photoFindTotalDto)
@@ -43,21 +43,21 @@ export class PhotoService {
 
     }
 
-    async findTotalDatePart(findTotalDatePartDto: PhotoFindTotalDatePartDto): Promise<PhotoTotalDatePartDto[]> {
+    async findTotalDatePart(findTotalDatePartDto: FindTotalDatePartDto): Promise<TotalDatePartDto[]> {
 
-        const {dateColumn, datePart} = findTotalDatePartDto
+        const {datePart} = findTotalDatePartDto
         const photoModels = await this.photoModel.findAll({
             attributes: [
-                [fn('distinct', fn('date_part', datePart, col(dateColumn))), 'value'],
+                [fn('distinct', fn('date_part', datePart, col('dateCreate'))), 'value'],
                 [fn('count', col('id')), 'total']
             ],
-            group: fn('date_part', datePart, col(dateColumn)),
+            group: fn('date_part', datePart, col('dateCreate')),
             order: [
                 col('value')
             ]
         })
 
-        return photoModels.map(photoModel => new PhotoTotalDatePartDto(photoModel))
+        return photoModels.map(photoModel => new TotalDatePartDto(photoModel))
 
     }
 
@@ -93,13 +93,9 @@ export class PhotoService {
 
     }
 
-    getWhereOptions(photoFindTotalDto: PhotoFindTotalDto): WhereOptions {
+    getWhereOptions(photoFindTotalDto: FindTotalDto): WhereOptions {
 
-        const conditions: WhereOptions[] = [
-            {
-                isDeleted: false
-            }
-        ];
+        const conditions: WhereOptions[] = [];
 
         ['year', 'month', 'day'].forEach(datePart => {
 
