@@ -21,14 +21,6 @@ export class PhotoModel extends Model {
     @Column({comment: 'Хеш', type: TEXT, allowNull: false, unique: true})
     hash: string
 
-    @ApiProperty({description: 'Дата создания файла', example: '2021-10-21T06:32:32.401Z'})
-    @Column({comment: 'Дата создания файла', type: DATE, allowNull: false})
-    dateCreate: Date
-
-    @ApiProperty({description: 'Дата импорта файла', example: '2021-10-21T06:32:32.401Z'})
-    @Column({comment: 'Дата импорта файла', type: DATE, allowNull: false})
-    dateImport: Date
-
     @ApiProperty({description: 'Плитка 256x256 без сохранения пропорций', example: 'bytea'})
     @Column({comment: 'Плитка 256x256', type: BLOB, allowNull: false})
     thumbnail: Buffer
@@ -36,6 +28,14 @@ export class PhotoModel extends Model {
     @ApiProperty({description: 'Предпросмотр до 1024x1024 с сохранением пропорций', example: 'bytea'})
     @Column({comment: 'Предпросмотр до 1024x1024 с сохранением пропорций', type: BLOB, allowNull: false})
     preview: Buffer
+
+    @ApiProperty({description: 'Дата создания файла', example: '2021-10-21T06:32:32.401Z'})
+    @Column({comment: 'Дата создания файла', type: DATE, allowNull: false})
+    dateCreate: Date
+
+    @ApiProperty({description: 'Дата импорта файла', example: '2021-10-21T06:32:32.401Z'})
+    @Column({comment: 'Дата импорта файла', type: DATE, allowNull: false})
+    dateImport: Date
 
     @ApiProperty({description: 'Пользователь', example: '00000000-0000-0000-0000-000000000000'})
     @ForeignKey(() => UserModel)

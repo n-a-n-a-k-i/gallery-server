@@ -18,18 +18,15 @@ export class PhotoService {
 
     async findAll(photoFindAllDto: PhotoFindAllDto): Promise<PhotoModel[]> {
 
-        const datePartConditions = this.getDatePartConditions(photoFindAllDto)
-        const {dateColumn, sortDirection, limit, offset} = photoFindAllDto
+        const {sortColumn, sortDirection, limit, offset} = photoFindAllDto
 
         return await this.photoModel.findAll({
             attributes: {
                 exclude: ['thumbnail', 'preview']
             },
-            where: {
-                [Op.and]: datePartConditions
-            },
+            where: this.getWhereOptions(photoFindAllDto),
             order: [
-                [dateColumn, sortDirection],
+                [sortColumn, sortDirection],
                 'id'
             ],
             limit: limit,
@@ -40,12 +37,8 @@ export class PhotoService {
 
     async findTotal(photoFindTotalDto: PhotoFindTotalDto): Promise<number> {
 
-        const datePartConditions = this.getDatePartConditions(photoFindTotalDto)
-
         return await this.photoModel.count({
-            where: {
-                [Op.and]: datePartConditions
-            }
+            where: this.getWhereOptions(photoFindTotalDto)
         })
 
     }
@@ -100,27 +93,33 @@ export class PhotoService {
 
     }
 
-    getDatePartConditions(photoFindTotalDto: PhotoFindTotalDto): WhereOptions<WhereOptions>[] {
+    getWhereOptions(photoFindTotalDto: PhotoFindTotalDto): WhereOptions {
 
-        const conditions = []
-        const dateParts = ['year', 'month', 'day']
+        const conditions: WhereOptions[] = [
+            {
+                isDeleted: false
+            }
+        ];
 
-        dateParts.forEach(datePart => {
+        ['year', 'month', 'day'].forEach(datePart => {
 
-            const items = photoFindTotalDto[datePart + 's']
+            const values = photoFindTotalDto[datePart + 's']
 
-            if (items.length) conditions.push(
-                where(
-                    fn('date_part', datePart, col('dateCreate')),
-                    {
-                        [Op.in]: items
-                    }
+            if (values.length) {
+
+                conditions.push(
+                    where(fn('date_part', datePart, col('dateCreate')), {
+                        [Op.in]: values
+                    })
                 )
-            )
+
+            }
 
         })
 
-        return conditions
+        return {
+            [Op.and]: conditions
+        }
 
     }
 
