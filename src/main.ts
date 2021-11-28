@@ -9,7 +9,8 @@ import * as cookieParser from 'cookie-parser';
     const app = await NestFactory.create(AppModule, {
         cors: {
             origin: true,
-            credentials: true
+            credentials: true,
+            exposedHeaders: ['Content-Disposition']
         }
     })
 

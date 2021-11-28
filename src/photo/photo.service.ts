@@ -6,13 +6,16 @@ import {FindAllDto} from "./dto/find.all.dto";
 import {FindTotalDto} from "./dto/find.total.dto";
 import {FindTotalDatePartDto} from "./dto/find.total.date.part.dto";
 import {TotalDatePartDto} from "./dto/total.date.part.dto";
+import {UserService} from "../user/user.service";
+import {join} from "path";
 
 @Injectable()
 export class PhotoService {
 
     constructor(
         @InjectModel(PhotoModel)
-        private photoModel: typeof PhotoModel
+        private photoModel: typeof PhotoModel,
+        private userService: UserService
     ) {
     }
 
@@ -93,6 +96,22 @@ export class PhotoService {
 
     }
 
+    async findDateCreate(id: string): Promise<Date> {
+
+        const photoModel: PhotoModel = await this.photoModel.findByPk(id, {
+            attributes: {
+                exclude: ['id', 'hash', 'dateImport', 'thumbnail', 'preview', 'user']
+            }
+        })
+
+        if (!photoModel) {
+            throw new NotFoundException('Фотография не найдена')
+        }
+
+        return photoModel.dateCreate
+
+    }
+
     getWhereOptions(photoFindTotalDto: FindTotalDto): WhereOptions {
 
         const conditions: WhereOptions[] = [];
@@ -116,6 +135,42 @@ export class PhotoService {
         return {
             [Op.and]: conditions
         }
+
+    }
+
+    numberToString(number: number, size: number, char: string = '0'): string {
+
+        let result = number.toString()
+
+        while (result.length < size) result = char + result
+
+        return result
+
+    }
+
+    timeZone(date: Date): Date {
+
+        return new Date(date.getTime() + (date.getTimezoneOffset() * 60 * 1000))
+
+    }
+
+    async getFilePath(id: string, user: string): Promise<string> {
+
+        const dateCreate = this.timeZone(await this.findDateCreate(id))
+
+        const year = dateCreate.getFullYear().toString()
+        const month = this.numberToString(dateCreate.getMonth() + 1, 2)
+        const day = this.numberToString(dateCreate.getDate(), 2)
+        const hours = this.numberToString(dateCreate.getHours(), 2)
+        const minutes = this.numberToString(dateCreate.getMinutes(), 2)
+        const seconds = this.numberToString(dateCreate.getSeconds(), 2)
+
+        const fileName = `${year}-${month}-${day} ${hours}-${minutes}-${seconds} ${id}.jpg`
+
+        const userModel = await this.userService.findById(user)
+        const nextcloud = process.env.NEXTCLOUD_DIR.split('{username}').join(userModel.username)
+
+        return join(nextcloud, userModel.cloudDirSync, year, month, fileName)
 
     }
 
