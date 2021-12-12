@@ -34,6 +34,14 @@ NEXTCLOUD_DIR=/var/lib/docker/volumes/nextcloud_app/_data/data
 NEXTCLOUD_WEBDAV=https://cloud.example.org/remote.php/dav
 ```
 
+## Запуск
+
+Установить `pm2`:
+
+```shell
+pm2 start dist/main.js --name gallery-server
+```
+
 ## База данных
 
 Пример в docker:
