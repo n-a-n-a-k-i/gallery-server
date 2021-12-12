@@ -61,10 +61,10 @@ export class AccountController {
         const accessTime = eval(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME) * 1000;
         const refreshTime = eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000;
 
-        response.cookie('accessToken', accessToken, {httpOnly, maxAge: accessTime, path: '/photo/thumbnail'})
-        response.cookie('accessToken', accessToken, {httpOnly, maxAge: accessTime, path: '/photo/preview'})
-        response.cookie('refreshToken', refreshToken, {httpOnly, maxAge: refreshTime, path: '/account/refresh'})
-        response.cookie('refreshToken', refreshToken, {httpOnly, maxAge: refreshTime, path: '/account/sign-out'})
+        response.cookie('accessToken', accessToken, {httpOnly, maxAge: accessTime, path: '/photo/thumbnail', sameSite: 'none'})
+        response.cookie('accessToken', accessToken, {httpOnly, maxAge: accessTime, path: '/photo/preview', sameSite: 'none'})
+        response.cookie('refreshToken', refreshToken, {httpOnly, maxAge: refreshTime, path: '/account/refresh', sameSite: 'none'})
+        response.cookie('refreshToken', refreshToken, {httpOnly, maxAge: refreshTime, path: '/account/sign-out', sameSite: 'none'})
 
         return {accessToken}
 
