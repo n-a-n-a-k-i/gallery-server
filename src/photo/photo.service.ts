@@ -7,7 +7,6 @@ import {FindTotalDto} from "./dto/find.total.dto";
 import {FindTotalDatePartDto} from "./dto/find.total.date.part.dto";
 import {TotalDatePartDto} from "./dto/total.date.part.dto";
 import {UserService} from "../user/user.service";
-import {join} from "path";
 
 @Injectable()
 export class PhotoService {
@@ -148,29 +147,21 @@ export class PhotoService {
 
     }
 
-    timeZone(date: Date): Date {
+    async getFullFilePath(id: string): Promise<string> {
 
-        return new Date(date.getTime() + (date.getTimezoneOffset() * 60 * 1000))
+        const dateCreate = await this.findDateCreate(id)
+        const {cloudUsername, cloudDirSync} = await this.userService.findById(process.env.NEXTCLOUD_OWNER)
 
-    }
-
-    async getFilePath(id: string, user: string): Promise<string> {
-
-        const dateCreate = this.timeZone(await this.findDateCreate(id))
-
-        const year = dateCreate.getFullYear().toString()
-        const month = this.numberToString(dateCreate.getMonth() + 1, 2)
-        const day = this.numberToString(dateCreate.getDate(), 2)
-        const hours = this.numberToString(dateCreate.getHours(), 2)
-        const minutes = this.numberToString(dateCreate.getMinutes(), 2)
-        const seconds = this.numberToString(dateCreate.getSeconds(), 2)
-
-        const fileName = `${year}-${month}-${day} ${hours}-${minutes}-${seconds} ${id}.jpg`
-
-        const userModel = await this.userService.findById(user)
-        const nextcloud = process.env.NEXTCLOUD_DIR.split('{username}').join(userModel.username)
-
-        return join(nextcloud, userModel.cloudDirSync, year, month, fileName)
+        return process.env.NEXTCLOUD_PHOTO
+            .split('{username}').join(cloudUsername)
+            .split('{dirSync}').join(cloudDirSync)
+            .split('{year}').join(dateCreate.getFullYear().toString())
+            .split('{month}').join(this.numberToString(dateCreate.getMonth() + 1, 2))
+            .split('{day}').join(this.numberToString(dateCreate.getDate(), 2))
+            .split('{hours}').join(this.numberToString(dateCreate.getHours(), 2))
+            .split('{minutes}').join(this.numberToString(dateCreate.getMinutes(), 2))
+            .split('{seconds}').join(this.numberToString(dateCreate.getSeconds(), 2))
+            .split('{id}').join(id)
 
     }
 

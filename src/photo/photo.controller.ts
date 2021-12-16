@@ -1,4 +1,4 @@
-import {Controller, Get, Param, ParseUUIDPipe, Query, Req, Res, StreamableFile} from '@nestjs/common';
+import {Controller, Get, Param, ParseUUIDPipe, Query, Res, StreamableFile} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {PhotoService} from "./photo.service";
 import * as Buffer from "buffer";
@@ -8,7 +8,6 @@ import {FindAllDto} from "./dto/find.all.dto";
 import {FindTotalDto} from "./dto/find.total.dto";
 import {FindTotalDatePartDto} from "./dto/find.total.date.part.dto";
 import {TotalDatePartDto} from "./dto/total.date.part.dto";
-import {RequestWithUser} from "../account/interface/request.with.user.interface";
 import {basename} from 'path';
 import {createReadStream} from "fs";
 
@@ -79,18 +78,16 @@ export class PhotoController {
 
     @Get('/download/:id')
     async findPhoto(
-        @Req() request: RequestWithUser,
         @Res({passthrough: true}) response: Response,
         @Param('id', new ParseUUIDPipe({version: '4'})) id: string
     ): Promise<StreamableFile> {
 
-        const filePath = await this.photoService.getFilePath(id, request.user.id)
-        const fileName = basename(filePath)
+        const fullFilePath = await this.photoService.getFullFilePath(id)
 
-        response.attachment(fileName)
+        response.attachment(basename(fullFilePath))
         response.contentType('image/jpeg')
 
-        return new StreamableFile(createReadStream(filePath))
+        return new StreamableFile(createReadStream(fullFilePath))
 
     }
 

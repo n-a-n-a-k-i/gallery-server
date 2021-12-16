@@ -7,7 +7,7 @@ REST API для Gallery
 Переменные среды описать в файле `.env` в корне приложения:
 
 ```dotenv
-HTTP_PORT=5000
+HTTP_PORT=5001
 
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
@@ -30,7 +30,8 @@ PHOTO_PREVIEW_WIDTH=1024
 PHOTO_PREVIEW_HEIGHT=1024
 PHOTO_PREVIEW_FIT=inside
 
-NEXTCLOUD_DIR=/var/lib/docker/volumes/nextcloud_app/_data/data
+NEXTCLOUD_OWNER=00000000-0000-0000-0000-000000000000
+NEXTCLOUD_PHOTO="/var/lib/docker/volumes/nextcloud_app/_data/data/{username}/files/{dirSync}/{year}/{month}/{year}-{month}-{day} {hours}-{minutes}-{seconds} {id}.jpg"
 NEXTCLOUD_WEBDAV=https://cloud.example.org/remote.php/dav
 ```
 
