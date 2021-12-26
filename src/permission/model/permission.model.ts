@@ -4,7 +4,7 @@ import {literal, TEXT, UUID} from "sequelize";
 import {UserModel} from "../../user/model/user.model";
 import {UserPermissionModel} from "../../user.permission/model/user.permission.model";
 
-@Table({comment: 'Разрешение', tableName: 'permission', createdAt: false, updatedAt: false})
+@Table({comment: 'Разрешение', tableName: 'permission'})
 export class PermissionModel extends Model<PermissionModel> {
 
     @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})

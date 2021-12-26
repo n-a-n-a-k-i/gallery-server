@@ -16,23 +16,29 @@ export class AccountService {
     ) {
     }
 
-    async signIn(payload: Payload): Promise<Token> {
+    async findAccount(payload: Payload): Promise<UserModel> {
+
+        return await this.userService.findById(payload.id)
+
+    }
+
+    async signIn(payload: Payload, host: string, userAgent: string): Promise<Token> {
 
         const token = this.generateToken(payload)
 
-        await this.refreshTokenService.create(token.refreshToken, payload.id)
+        await this.refreshTokenService.create(payload.id, token.refreshToken, host, userAgent)
 
         return token
 
     }
 
-    async refresh(oldPayload: Payload, oldRefreshToken: string): Promise<Token> {
+    async refresh(id: string, refreshToken: string, host: string, userAgent: string): Promise<Token> {
 
-        const userModel = await this.userService.findById(oldPayload.id)
+        const userModel = await this.userService.findById(id)
         const payload = this.generatePayload(userModel)
         const token = this.generateToken(payload)
 
-        await this.refreshTokenService.updateRefreshToken(oldRefreshToken, token.refreshToken)
+        await this.refreshTokenService.updateRefreshToken(refreshToken, token.refreshToken, host, userAgent)
 
         return token
 
@@ -56,12 +62,12 @@ export class AccountService {
 
         const accessToken = this.jwtService.sign(payload, {
             secret: process.env.JWT_ACCESS_TOKEN_SECRET,
-            expiresIn: `${eval(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME)}s`
+            expiresIn: eval(process.env.JWT_ACCESS_TOKEN_EXPIRES_IN)
         })
 
         const refreshToken = this.jwtService.sign(payload, {
             secret: process.env.JWT_REFRESH_TOKEN_SECRET,
-            expiresIn: `${eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME)}s`
+            expiresIn: eval(process.env.JWT_REFRESH_TOKEN_EXPIRES_IN)
         })
 
         return {accessToken, refreshToken}

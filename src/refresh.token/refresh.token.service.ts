@@ -13,14 +13,14 @@ export class RefreshTokenService {
     ) {
     }
 
-    async create(refreshToken: string, user: string): Promise<RefreshTokenModel> {
+    async create(user: string, refreshToken: string, host: string, userAgent: string): Promise<RefreshTokenModel> {
 
         const value = this.hashRefreshToken(refreshToken)
-        const expiresIn = this.generateExpiresIn()
+        const expiredAt = this.generateExpiredAt()
 
         try {
 
-            return await this.refreshTokenModel.create({value, user, expiresIn})
+            return await this.refreshTokenModel.create({user, value, expiredAt, host, userAgent})
 
         } catch (error) {
 
@@ -52,16 +52,18 @@ export class RefreshTokenService {
 
     }
 
-    async updateRefreshToken(oldRefreshToken, newRefreshToken): Promise<RefreshTokenModel> {
+    async updateRefreshToken(refreshTokenOld, refreshToken, host, userAgent): Promise<RefreshTokenModel> {
 
-        const refreshTokenModel = await this.findByRefreshToken(oldRefreshToken)
+        const refreshTokenModel = await this.findByRefreshToken(refreshTokenOld)
 
         if (!refreshTokenModel) {
             throw new UnauthorizedException('Токен не найден')
         }
 
-        refreshTokenModel.value = this.hashRefreshToken(newRefreshToken)
-        refreshTokenModel.expiresIn = this.generateExpiresIn()
+        refreshTokenModel.value = this.hashRefreshToken(refreshToken)
+        refreshTokenModel.expiredAt = this.generateExpiredAt()
+        refreshTokenModel.host = host
+        refreshTokenModel.userAgent = userAgent
 
         return refreshTokenModel.save()
 
@@ -81,7 +83,7 @@ export class RefreshTokenService {
 
         const total = await this.refreshTokenModel.destroy({
             where: {
-                expiresIn: {
+                expiredAt: {
                     [Op.lt]: new Date()
                 }
             }
@@ -93,13 +95,12 @@ export class RefreshTokenService {
 
     }
 
-    generateExpiresIn(): Date {
+    generateExpiredAt(): Date {
 
-        const seconds: number = eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME)
-        const milliseconds = seconds * 1000
-        const timestamp = Date.now() + milliseconds
+        const expiresIn: number = eval(process.env.JWT_REFRESH_TOKEN_EXPIRES_IN)
+        const expiredAt = Date.now() + expiresIn
 
-        return new Date(timestamp)
+        return new Date(expiredAt)
 
     }
 

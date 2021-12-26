@@ -8,6 +8,7 @@ REST API для Gallery
 
 ```dotenv
 HTTP_PORT=5001
+HTTP_COOKIE_SECURE=false
 
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
@@ -19,9 +20,9 @@ BCRYPT_PASSWORD_SALT_ROUNDS=10
 CRYPTO_REFRESH_TOKEN_ALGORITHM=sha512
 
 JWT_ACCESS_TOKEN_SECRET=secret-for-access-token
-JWT_ACCESS_TOKEN_EXPIRATION_TIME=60*12
+JWT_ACCESS_TOKEN_EXPIRES_IN=1000*60*12
 JWT_REFRESH_TOKEN_SECRET=secret-for-refresh-token
-JWT_REFRESH_TOKEN_EXPIRATION_TIME=60*60*24*30
+JWT_REFRESH_TOKEN_EXPIRES_IN=1000*60*60*24*365
 
 PHOTO_THUMBNAIL_WIDTH=256
 PHOTO_THUMBNAIL_HEIGHT=256
@@ -56,66 +57,32 @@ docker run --name gallery_database --restart=always -p 55432:5432 -v gallery_dat
 Предзапросный скрипт:
 
 ```js
-(() => {
+const server = pm.collectionVariables.get("server")
 
-    const user = {username: 'gallery', password: 'gallery'}
+pm.sendRequest(`${server}/account/sign-out`, (error, response) => {
 
-    /**
-     * Удаление переменной с токеном доступа
-     */
+    if (error) console.error(error)
 
-    const accessToken = pm.collectionVariables.get('accessToken')
-
-    if (accessToken) {
-
-        pm.collectionVariables.unset('accessToken')
-        console.log(`Удалён токен доступа: ${accessToken}`)
-
-    }
-
-    /**
-     * Выход
-     */
-
-    pm.sendRequest('http://localhost:5000/account/sign-out', (error, response) => {
-
-        if (error) console.log(error)
-        if (response.code !== 200) console.log(`${response.code}: ${response.json().message}`)
-
-        /**
-         * Вход
-         */
-
-        pm.sendRequest({
-            url: 'http://localhost:5000/account/sign-in',
-            method: 'POST',
-            header: {'Content-Type': 'application/json'},
-            body: {mode: 'raw', raw: JSON.stringify(user)}
-        }, (error, response) => {
-
-            if (error) console.log(error)
-            if (response.code !== 200) console.log(`${response.code}: ${response.json().message}`)
-
-            /**
-             * Обновление токенов
-             */
-
-            pm.sendRequest('http://localhost:5000/account/refresh', (error, response) => {
-
-                if (error) console.log(error)
-                if (response.code !== 200) console.log(`${response.code}: ${response.json().message}`)
-
-                /**
-                 * Установка переменной с токеном доступа
-                 */
-
-                pm.collectionVariables.set('accessToken', response.json().accessToken)
-
+    pm.sendRequest({
+        url: `${server}/account/sign-in`,
+        method: 'POST',
+        header: {
+            'Content-Type': 'application/json'
+        },
+        body: {
+            mode: 'raw',
+            raw: JSON.stringify({
+                username: pm.collectionVariables.get("username"),
+                password: pm.collectionVariables.get("password")
             })
+        }
+    }, (error, response) => {
+        console.log(response)
 
-        })
+        if (error) console.error(error)
+        if (response.code === 200) pm.collectionVariables.set("accessToken", response.json().accessToken)
 
     })
 
-})()
+})
 ```

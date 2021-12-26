@@ -7,6 +7,8 @@ export class PermissionDto {
         this.id = permissionModel.id
         this.value = permissionModel.value
         this.description = permissionModel.description
+        this.createdAt = permissionModel.createdAt
+        this.updatedAt = permissionModel.updatedAt
     }
 
     @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
@@ -17,5 +19,11 @@ export class PermissionDto {
 
     @ApiProperty({description: 'Описание', example: 'Создать пользователя'})
     readonly description: string
+
+    @ApiProperty({description: 'Дата создания', example: '2021-10-21T06:32:32.401Z'})
+    readonly createdAt: Date
+
+    @ApiProperty({description: 'Дата изменения', example: '2021-10-21T06:32:32.401Z'})
+    readonly updatedAt: Date
 
 }

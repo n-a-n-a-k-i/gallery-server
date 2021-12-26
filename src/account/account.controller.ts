@@ -1,8 +1,8 @@
-import {Controller, Get, HttpCode, Post, Req, Res, UseGuards} from "@nestjs/common";
+import {Controller, Get, Headers, HttpCode, Post, Req, Res, UseGuards} from "@nestjs/common";
 import {LocalGuard} from "./guard/local.guard";
 import {AccountService} from "./account.service";
 import {Public} from "./decorator/public.decorator";
-import {ApiBody, ApiCookieAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiBody, ApiCookieAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {Response} from "express";
 import {JwtRefreshTokenGuard} from "./guard/jwt.refresh.token.guard";
 import {AccessTokenDto} from "./dto/access.token.dto";
@@ -10,12 +10,25 @@ import {SignInDto} from "./dto/sign.in.dto";
 import {RequestWithUser} from "./interface/request.with.user.interface";
 import {RequestWithUserAndCookieRefreshToken} from "./interface/request.with.user.and.cookie.refresh.token.interface";
 import {Token} from "./interface/token.interface";
+import {UserDto} from "../user/dto/user.dto";
 
 @ApiTags('Аккаунт')
 @Controller('account')
 export class AccountController {
 
     constructor(private accountService: AccountService) {
+    }
+
+    @ApiOperation({summary: 'Аккаунт'})
+    @ApiResponse({type: UserDto})
+    @ApiBearerAuth('accessToken')
+    @Get()
+    async findAccount(@Req() request: RequestWithUser): Promise<UserDto> {
+
+        const userModel = await this.accountService.findAccount(request.user)
+
+        return new UserDto(userModel)
+
     }
 
     @ApiOperation({summary: 'Войти'})
@@ -27,13 +40,16 @@ export class AccountController {
     @Post('/sign-in')
     async signIn(
         @Req() request: RequestWithUser,
+        @Headers('host') host,
+        @Headers('user-agent') userAgent,
         @Res({passthrough: true}) response: Response
     ): Promise<AccessTokenDto> {
 
-        const payload = request.user
-        const token = await this.accountService.signIn(payload)
+        const token = await this.accountService.signIn(request.user, host, userAgent)
 
-        return this.setToken(response, token)
+        this.setToken(response, token)
+
+        return new AccessTokenDto(token)
 
     }
 
@@ -45,28 +61,16 @@ export class AccountController {
     @Get('/refresh')
     async refresh(
         @Req() request: RequestWithUserAndCookieRefreshToken,
+        @Headers('host') host,
+        @Headers('user-agent') userAgent,
         @Res({passthrough: true}) response: Response
     ): Promise<AccessTokenDto> {
 
-        const payload = request.user
-        const token = await this.accountService.refresh(payload, request.cookies.refreshToken)
+        const token = await this.accountService.refresh(request.user.id, request.cookies.refreshToken, host, userAgent)
 
-        return this.setToken(response, token)
+        this.setToken(response, token)
 
-    }
-
-    setToken(response: Response, {accessToken, refreshToken}: Token): AccessTokenDto {
-
-        const httpOnly = true;
-        const accessTime = eval(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME) * 1000;
-        const refreshTime = eval(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000;
-
-        response.cookie('accessToken', accessToken, {httpOnly, maxAge: accessTime, path: '/photo/thumbnail', secure: true, sameSite: 'none'})
-        response.cookie('accessToken', accessToken, {httpOnly, maxAge: accessTime, path: '/photo/preview', secure: true, sameSite: 'none'})
-        response.cookie('refreshToken', refreshToken, {httpOnly, maxAge: refreshTime, path: '/account/refresh', secure: true, sameSite: 'none'})
-        response.cookie('refreshToken', refreshToken, {httpOnly, maxAge: refreshTime, path: '/account/sign-out', secure: true, sameSite: 'none'})
-
-        return {accessToken}
+        return new AccessTokenDto(token)
 
     }
 
@@ -85,6 +89,34 @@ export class AccountController {
         response.clearCookie('accessToken', {path: '/photo/preview'})
         response.clearCookie('refreshToken', {path: '/account/refresh'})
         response.clearCookie('refreshToken', {path: '/account/sign-out'})
+
+    }
+
+    // Установка Cookie:
+    // 1. Токен доступа для запроса миниатюр и предпросмотров напрямую из src параметра в тегах img.
+    // 2. Токен обновления для запроса новых токенов и выхода из системы.
+    setToken(response: Response, token: Token) {
+
+        const secure = eval(process.env.HTTP_COOKIE_SECURE);
+
+        [
+
+            ['accessToken', process.env.JWT_ACCESS_TOKEN_EXPIRES_IN, '/photo/thumbnail'],
+            ['accessToken', process.env.JWT_ACCESS_TOKEN_EXPIRES_IN, '/photo/preview'],
+            ['refreshToken', process.env.JWT_REFRESH_TOKEN_EXPIRES_IN, '/account/refresh'],
+            ['refreshToken', process.env.JWT_REFRESH_TOKEN_EXPIRES_IN, '/account/sign-out']
+
+        ].forEach(([name, expiresIn, path]) => {
+
+            response.cookie(name, token[name], {
+                httpOnly: true,
+                maxAge: eval(expiresIn),
+                path,
+                secure,
+                sameSite: secure ? 'none' : 'lax'
+            })
+
+        })
 
     }
 
