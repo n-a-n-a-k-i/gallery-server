@@ -24,5 +24,4 @@ import {JwtModule} from "@nestjs/jwt";
         RefreshTokenModule
     ]
 })
-export class AccountModule {
-}
+export class AccountModule {}

@@ -8,8 +8,7 @@ import {RequestWithUser} from "../interface/request.with.user.interface";
 @Injectable()
 export class PermissionGuard implements CanActivate {
 
-    constructor(private reflector: Reflector) {
-    }
+    constructor(private reflector: Reflector) {}
 
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
 

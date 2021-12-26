@@ -15,8 +15,7 @@ export class PhotoService {
         @InjectModel(PhotoModel)
         private photoModel: typeof PhotoModel,
         private userService: UserService
-    ) {
-    }
+    ) {}
 
     async findAll(photoFindAllDto: FindAllDto): Promise<PhotoModel[]> {
 

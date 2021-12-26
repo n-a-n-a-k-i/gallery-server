@@ -10,8 +10,7 @@ import {Permission} from "../account/enum/permission.enum";
 @Controller('user')
 export class UserController {
 
-    constructor(private readonly userService: UserService) {
-    }
+    constructor(private readonly userService: UserService) {}
 
     @ApiOperation({summary: 'Создание пользователя'})
     @ApiResponse({type: UserDto})

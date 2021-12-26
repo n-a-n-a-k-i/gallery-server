@@ -12,5 +12,4 @@ import {RefreshTokenModel} from "./model/refresh.token.model";
     ],
     exports: [RefreshTokenService]
 })
-export class RefreshTokenModule {
-}
+export class RefreshTokenModule {}

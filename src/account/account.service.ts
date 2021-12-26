@@ -13,8 +13,7 @@ export class AccountService {
         private userService: UserService,
         private refreshTokenService: RefreshTokenService,
         private jwtService: JwtService
-    ) {
-    }
+    ) {}
 
     async findAccount(payload: Payload): Promise<UserModel> {
 

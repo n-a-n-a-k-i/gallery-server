@@ -16,8 +16,7 @@ import {UserDto} from "../user/dto/user.dto";
 @Controller('account')
 export class AccountController {
 
-    constructor(private accountService: AccountService) {
-    }
+    constructor(private accountService: AccountService) {}
 
     @ApiOperation({summary: 'Аккаунт'})
     @ApiResponse({type: UserDto})

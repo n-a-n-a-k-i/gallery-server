@@ -7,8 +7,7 @@ import {PermissionDto} from "./dto/permission.dto";
 @Controller('permission')
 export class PermissionController {
 
-    constructor(private readonly permissionService: PermissionService) {
-    }
+    constructor(private readonly permissionService: PermissionService) {}
 
     @ApiOperation({summary: 'Получить все разрешения'})
     @ApiResponse({type: [PermissionDto]})

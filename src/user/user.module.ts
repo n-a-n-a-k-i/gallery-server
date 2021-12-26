@@ -12,5 +12,4 @@ import {UserModel} from "./model/user.model";
     ],
     exports: [UserService]
 })
-export class UserModule {
-}
+export class UserModule {}

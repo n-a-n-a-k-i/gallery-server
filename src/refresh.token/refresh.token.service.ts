@@ -10,8 +10,7 @@ export class RefreshTokenService {
     constructor(
         @InjectModel(RefreshTokenModel)
         private refreshTokenModel: typeof RefreshTokenModel
-    ) {
-    }
+    ) {}
 
     async create(user: string, refreshToken: string, host: string, userAgent: string): Promise<RefreshTokenModel> {
 

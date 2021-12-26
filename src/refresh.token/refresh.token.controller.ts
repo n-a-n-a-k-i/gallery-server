@@ -8,8 +8,7 @@ import {RequestWithUser} from "../account/interface/request.with.user.interface"
 @Controller('refresh-token')
 export class RefreshTokenController {
 
-    constructor(private readonly refreshTokenService: RefreshTokenService) {
-    }
+    constructor(private readonly refreshTokenService: RefreshTokenService) {}
 
     @ApiOperation({summary: 'Получить все токены'})
     @ApiResponse({type: [RefreshTokenDto]})

@@ -8,8 +8,7 @@ export class PermissionService {
     constructor(
         @InjectModel(PermissionModel)
         private permissionModel: typeof PermissionModel
-    ) {
-    }
+    ) {}
 
     async findAll(): Promise<PermissionModel[]> {
         return await this.permissionModel.findAll()

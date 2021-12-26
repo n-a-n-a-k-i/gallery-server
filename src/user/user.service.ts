@@ -12,8 +12,7 @@ export class UserService {
     constructor(
         @InjectModel(UserModel)
         private userModel: typeof UserModel
-    ) {
-    }
+    ) {}
 
     async create(userCreateDto: UserCreateDto): Promise<UserModel> {
 

@@ -15,8 +15,7 @@ import {createReadStream} from "fs";
 @Controller('photo')
 export class PhotoController {
 
-    constructor(private readonly photoService: PhotoService) {
-    }
+    constructor(private readonly photoService: PhotoService) {}
 
     @ApiOperation({summary: 'Получить список фотографий'})
     @ApiResponse({type: [PhotoDto]})

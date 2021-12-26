@@ -58,5 +58,4 @@ import { PhotoModule } from './photo/photo.module';
         PhotoModule
     ]
 })
-export class AppModule {
-}
+export class AppModule {}
