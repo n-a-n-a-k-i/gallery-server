@@ -1,5 +1,5 @@
 export enum DatePart {
-    day = 'day',
+    year = 'year',
     month = 'month',
-    year = 'year'
+    day = 'day'
 }

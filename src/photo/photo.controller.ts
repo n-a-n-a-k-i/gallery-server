@@ -81,7 +81,7 @@ export class PhotoController {
         @Param('id', new ParseUUIDPipe({version: '4'})) id: string
     ): Promise<StreamableFile> {
 
-        const fullFilePath = await this.photoService.getFullFilePath(id)
+        const fullFilePath: string = await this.photoService.getFullFilePath(id)
 
         response.attachment(basename(fullFilePath))
         response.contentType('image/jpeg')
