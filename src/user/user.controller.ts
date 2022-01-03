@@ -1,10 +1,10 @@
 import {Body, Controller, Get, Post} from '@nestjs/common';
 import {UserService} from "./user.service";
-import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {UserDto} from "./dto/user.dto";
 import {UserCreateDto} from "./dto/user.create.dto";
 import {Permissions} from "../account/decorator/permissions.decorator";
-import {Permission} from "../account/enum/permission.enum";
+import {Permission} from "../permission/enum/permission.enum";
 
 @ApiTags('Пользователь')
 @Controller('user')
@@ -14,6 +14,7 @@ export class UserController {
 
     @ApiOperation({summary: 'Создание пользователя'})
     @ApiResponse({type: UserDto})
+    @ApiBody({type: UserCreateDto})
     @ApiBearerAuth('accessToken')
     @Permissions(Permission.USER_CREATE)
     @Post()

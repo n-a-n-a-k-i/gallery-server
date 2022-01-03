@@ -4,42 +4,73 @@ import {PhotoModel} from "../model/photo.model";
 export class PhotoDto {
 
     constructor(photoModel: PhotoModel) {
+
         this.id = photoModel.id
         this.user = photoModel.user
         this.date = photoModel.date
+
         this.atime = photoModel.atime
         this.mtime = photoModel.mtime
         this.ctime = photoModel.ctime
         this.birthtime = photoModel.birthtime
+
         this.createdAt = photoModel.createdAt
         this.updatedAt = photoModel.updatedAt
+
     }
 
-    @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
+    @ApiProperty({
+        description: 'Идентификатор',
+        format: 'uuid'
+    })
     readonly id: string
 
-    @ApiProperty({description: 'Пользователь', example: '00000000-0000-0000-0000-000000000000'})
+    @ApiProperty({
+        description: 'Пользователь',
+        format: 'uuid'
+    })
     readonly user: string
 
-    @ApiProperty({description: 'Дата', example: '2021-11-11T11:11:11.000Z'})
+    @ApiProperty({
+        description: 'Дата',
+        format: 'date-time'
+    })
     readonly date: Date
 
-    @ApiProperty({description: 'Дата открытия файла', example: '2021-11-11T11:11:11.000Z'})
+    @ApiProperty({
+        description: 'Дата открытия файла',
+        format: 'date-time'
+    })
     readonly atime: Date
 
-    @ApiProperty({description: 'Дата изменения содержимого файла', example: '2021-11-11T11:11:11.000Z'})
+    @ApiProperty({
+        description: 'Дата изменения содержимого файла',
+        format: 'date-time'
+    })
     readonly mtime: Date
 
-    @ApiProperty({description: 'Дата изменения свойств файла', example: '2021-11-11T11:11:11.000Z'})
+    @ApiProperty({
+        description: 'Дата изменения свойств файла',
+        format: 'date-time'
+    })
     readonly ctime: Date
 
-    @ApiProperty({description: 'Дата создания файла', example: '2021-11-11T11:11:11.000Z'})
+    @ApiProperty({
+        description: 'Дата создания файла',
+        format: 'date-time'
+    })
     readonly birthtime: Date
 
-    @ApiProperty({description: 'Дата создания', example: '2021-11-11T11:11:11.000Z'})
+    @ApiProperty({
+        description: 'Дата создания',
+        format: 'date-time'
+    })
     readonly createdAt: Date
 
-    @ApiProperty({description: 'Дата изменения', example: '2021-11-11T11:11:11.000Z'})
+    @ApiProperty({
+        description: 'Дата изменения',
+        format: 'date-time'
+    })
     readonly updatedAt: Date
 
 }

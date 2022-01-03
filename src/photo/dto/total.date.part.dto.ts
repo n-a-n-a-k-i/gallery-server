@@ -8,10 +8,16 @@ export class TotalDatePartDto {
         this.total = Number(photoModel.get('total'))
     }
 
-    @ApiProperty({description: 'Значение части даты', example: '2020'})
+    @ApiProperty({
+        description: 'Значение части даты',
+        example: 2020
+    })
     readonly value: number
 
-    @ApiProperty({description: 'Всего', example: '9000'})
+    @ApiProperty({
+        description: 'Количество',
+        example: 9000
+    })
     readonly total: number
 
 }

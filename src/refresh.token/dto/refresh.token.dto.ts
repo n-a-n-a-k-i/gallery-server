@@ -4,38 +4,66 @@ import {RefreshTokenModel} from "../model/refresh.token.model";
 export class RefreshTokenDto {
 
     constructor(tokenModel: RefreshTokenModel) {
+
         this.id = tokenModel.id
         this.user = tokenModel.user
-        this.host = tokenModel.host
-        this.userAgent = tokenModel.userAgent
         this.value = tokenModel.value
         this.expiredAt = tokenModel.expiredAt
+
+        this.host = tokenModel.host
+        this.userAgent = tokenModel.userAgent
+
         this.createdAt = tokenModel.createdAt
         this.updatedAt = tokenModel.updatedAt
+
     }
 
-    @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
+    @ApiProperty({
+        description: 'Идентификатор',
+        format: 'uuid'
+    })
     readonly id: string
 
-    @ApiProperty({description: 'Пользователь', example: '00000000-0000-0000-0000-000000000000'})
+    @ApiProperty({
+        description: 'Пользователь',
+        format: 'uuid'
+    })
     readonly user: string
 
-    @ApiProperty({description: 'Хост', example: 'localhost'})
+    @ApiProperty({
+        description: 'Хост',
+        format: 'hostname'
+    })
     readonly host: string
 
-    @ApiProperty({description: 'Клиентское приложение', example: 'PostmanRuntime/7.28.4'})
+    @ApiProperty({
+        description: 'Клиентское приложение',
+        example: 'PostmanRuntime'
+    })
     readonly userAgent: string
 
-    @ApiProperty({description: 'Значение', example: 'crypto#xxxxx.yyyyy.zzzzz'})
+    @ApiProperty({
+        description: 'Значение',
+        format: 'bcrypt'
+    })
     readonly value: string
 
-    @ApiProperty({description: 'Дата истекания', example: '2021-10-21T06:32:32.401Z'})
+    @ApiProperty({
+        description: 'Дата истекания',
+        format: 'date-time'
+    })
     readonly expiredAt: Date
 
-    @ApiProperty({description: 'Дата создания', example: '2021-10-21T06:32:32.401Z'})
+    @ApiProperty({
+        description: 'Дата создания',
+        format: 'date-time'
+    })
     readonly createdAt: Date
 
-    @ApiProperty({description: 'Дата изменения', example: '2021-10-21T06:32:32.401Z'})
+    @ApiProperty({
+        description: 'Дата изменения',
+        format: 'date-time'
+    })
     readonly updatedAt: Date
 
 }

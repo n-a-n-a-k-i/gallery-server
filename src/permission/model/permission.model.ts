@@ -3,6 +3,7 @@ import {ApiProperty} from "@nestjs/swagger";
 import {literal, TEXT, UUID} from "sequelize";
 import {UserModel} from "../../user/model/user.model";
 import {UserPermissionModel} from "../../user.permission/model/user.permission.model";
+import {Permission} from "../enum/permission.enum";
 
 @Table({comment: 'Разрешение', tableName: 'permission'})
 export class PermissionModel extends Model<PermissionModel> {
@@ -18,9 +19,9 @@ export class PermissionModel extends Model<PermissionModel> {
     })
     id: string
 
-    @ApiProperty({description: 'Значение', example: 'USER_CREATE'})
+    @ApiProperty({description: 'Значение', example: Permission.USER_CREATE})
     @Column({comment: 'Значение', type: TEXT, allowNull: false, unique: true})
-    value: string
+    value: Permission
 
     @ApiProperty({description: 'Описание', example: 'Создать пользователя'})
     @Column({comment: 'Описание', type: TEXT, allowNull: false})

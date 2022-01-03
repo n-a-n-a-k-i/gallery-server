@@ -1,15 +1,16 @@
-import {Controller, Get, Param, ParseUUIDPipe, Query, Res, StreamableFile} from '@nestjs/common';
+import {Controller, Get, Param, ParseEnumPipe, ParseUUIDPipe, Query, Res, StreamableFile} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {PhotoService} from "./photo.service";
 import * as Buffer from "buffer";
 import {Response} from "express";
-import {PhotoDto} from "./dto/photo.dto";
 import {FindAllDto} from "./dto/find.all.dto";
-import {FindTotalDto} from "./dto/find.total.dto";
-import {FindTotalDatePartDto} from "./dto/find.total.date.part.dto";
-import {TotalDatePartDto} from "./dto/total.date.part.dto";
 import {basename} from 'path';
 import {createReadStream} from "fs";
+import {DateColumn} from "./enum/date.column.enum";
+import {TotalDateDto} from "./dto/total.date.dto";
+import {DatePart} from "./enum/date.part.enum";
+import {PhotoDto} from "./dto/photo.dto";
+import {FindTotalDto} from "./dto/find.total.dto";
 
 @ApiTags('Фотография')
 @Controller('photo')
@@ -38,13 +39,22 @@ export class PhotoController {
         return await this.photoService.findTotal(findTotalDto)
     }
 
-    @ApiOperation({summary: 'Получить количество части даты'})
+    @ApiOperation({summary: 'Получить количество по частям даты'})
+    @ApiResponse({type: TotalDateDto})
     @ApiBearerAuth('accessToken')
-    @Get('/total/date/part')
-    async findTotalDatePart(
-        @Query() findTotalDatePartDto: FindTotalDatePartDto
-    ): Promise<TotalDatePartDto[]> {
-        return await this.photoService.findTotalDatePart(findTotalDatePartDto)
+    @Get('/total/:dateColumn')
+    async findTotalDate(
+        @Param('dateColumn', new ParseEnumPipe(DateColumn)) dateColumn: DateColumn
+    ): Promise<TotalDateDto> {
+
+        const totalDateDto = new TotalDateDto()
+
+        totalDateDto.years = await this.photoService.findTotalDatePart(dateColumn, DatePart.year)
+        totalDateDto.months = await this.photoService.findTotalDatePart(dateColumn, DatePart.month)
+        totalDateDto.days = await this.photoService.findTotalDatePart(dateColumn, DatePart.day)
+
+        return totalDateDto
+
     }
 
     @Get('/thumbnail/:id')

@@ -1,4 +1,4 @@
-import {Permission} from "../enum/permission.enum";
+import {Permission} from "../../permission/enum/permission.enum";
 import {SetMetadata} from "@nestjs/common";
 
 export const PERMISSION_KEY = 'permission'

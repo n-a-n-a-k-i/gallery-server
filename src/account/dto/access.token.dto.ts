@@ -7,7 +7,10 @@ export class AccessTokenDto {
         this.accessToken = token.accessToken
     }
 
-    @ApiProperty({description: 'Токен доступа', example: 'xxxxx.yyyyy.zzzzz'})
+    @ApiProperty({
+        description: 'Токен доступа',
+        format: 'jwt'
+    })
     readonly accessToken: string
 
 }

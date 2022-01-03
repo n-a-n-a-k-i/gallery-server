@@ -6,60 +6,125 @@ import {IsDate, IsEmail, IsPhoneNumber, IsString} from "class-validator";
 export class UserDto {
 
     constructor(userModel: UserModel) {
+
         this.id = userModel.id
         this.username = userModel.username
+
         this.cloudUsername = userModel.cloudUsername
         this.cloudDirScan = userModel.cloudDirScan
         this.cloudDirSync = userModel.cloudDirSync
+
         this.surname = userModel.surname
         this.name = userModel.name
         this.patronymic = userModel.patronymic
         this.birthday = userModel.birthday
         this.email = userModel.email
         this.phone = userModel.phone
+
+        this.createdAt = userModel.createdAt
+        this.updatedAt = userModel.updatedAt
+
         this.permissions = userModel.permissions?.map(permissionModel => new PermissionDto(permissionModel)) || []
+
     }
 
-    @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
+    @ApiProperty({
+        description: 'Идентификатор',
+        format: 'uuid'
+    })
     readonly id: string
 
-    @ApiProperty({description: 'Имя пользователя', example: 'user'})
+    @ApiProperty({
+        description: 'Имя пользователя',
+        example: 'user'
+    })
     readonly username: string
 
-    @ApiProperty({description: 'Имя пользователя в облаке', example: 'user'})
+    @ApiProperty({
+        description: 'Имя пользователя в облаке',
+        example: 'user',
+        required: false
+    })
     readonly cloudUsername: string
 
-    @ApiProperty({description: 'Директория сканирования в облаке', example: 'Телефон/Фотографии'})
+    @ApiProperty({
+        description: 'Директория сканирования в облаке',
+        example: 'Телефон/Фотографии',
+        required: false
+    })
     readonly cloudDirScan: string
 
-    @ApiProperty({description: 'Директория синхронизации в облаке', example: 'Семья/Фотографии'})
+    @ApiProperty({
+        description: 'Директория синхронизации в облаке',
+        example: 'Семья/Фотографии',
+        required: false
+    })
     readonly cloudDirSync: string
 
-    @ApiProperty({description: 'Фамилия', example: 'Фамилия'})
+    @ApiProperty({
+        description: 'Фамилия',
+        example: 'Фамилия',
+        required: false
+    })
     @IsString()
     readonly surname: string
 
-    @ApiProperty({description: 'Имя', example: 'Имя'})
+    @ApiProperty({
+        description: 'Имя',
+        example: 'Имя',
+        required: false
+    })
     @IsString()
     readonly name: string
 
-    @ApiProperty({description: 'Отчество', example: 'Отчество'})
+    @ApiProperty({
+        description: 'Отчество',
+        example: 'Отчество',
+        required: false
+    })
     @IsString()
     readonly patronymic: string
 
-    @ApiProperty({description: 'День рождения', example: '1991-12-03T16:02:00.000Z'})
+    @ApiProperty({
+        description: 'День рождения',
+        format: 'date-time',
+        required: false
+    })
     @IsDate()
     readonly birthday: Date
 
-    @ApiProperty({description: 'Электронная почта', example: 'user@gallery.nanaki'})
+    @ApiProperty({
+        description: 'Электронная почта',
+        format: 'email',
+        required: false
+    })
     @IsEmail()
     readonly email: string
 
-    @ApiProperty({description: 'Телефон', example: '+79995553311'})
+    @ApiProperty({
+        description: 'Телефон',
+        example: '+79995553311',
+        required: false
+    })
     @IsPhoneNumber()
     readonly phone: string
 
-    @ApiProperty({description: 'Разрешения', type: [PermissionDto]})
+    @ApiProperty({
+        description: 'Дата создания',
+        format: 'date-time'
+    })
+    readonly createdAt: Date
+
+    @ApiProperty({
+        description: 'Дата изменения',
+        format: 'date-time'
+    })
+    readonly updatedAt: Date
+
+    @ApiProperty({
+        description: 'Разрешения',
+        type: [PermissionDto]
+    })
     readonly permissions: PermissionDto[]
 
 }

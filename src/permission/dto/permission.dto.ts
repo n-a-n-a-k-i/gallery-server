@@ -1,5 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {PermissionModel} from "../model/permission.model";
+import {Permission} from "../enum/permission.enum";
 
 export class PermissionDto {
 
@@ -11,19 +12,35 @@ export class PermissionDto {
         this.updatedAt = permissionModel.updatedAt
     }
 
-    @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
+    @ApiProperty({
+        description: 'Идентификатор',
+        format: 'uuid'
+    })
     readonly id: string
 
-    @ApiProperty({description: 'Значение', example: 'USER_CREATE'})
-    readonly value: string
+    @ApiProperty({
+        description: 'Значение',
+        enum: Permission,
+        example: Permission.USER_CREATE
+    })
+    readonly value: Permission
 
-    @ApiProperty({description: 'Описание', example: 'Создать пользователя'})
+    @ApiProperty({
+        description: 'Описание',
+        example: 'Создать пользователя'
+    })
     readonly description: string
 
-    @ApiProperty({description: 'Дата создания', example: '2021-10-21T06:32:32.401Z'})
+    @ApiProperty({
+        description: 'Дата создания',
+        format: 'date-time'
+    })
     readonly createdAt: Date
 
-    @ApiProperty({description: 'Дата изменения', example: '2021-10-21T06:32:32.401Z'})
+    @ApiProperty({
+        description: 'Дата изменения',
+        format: 'date-time'
+    })
     readonly updatedAt: Date
 
 }

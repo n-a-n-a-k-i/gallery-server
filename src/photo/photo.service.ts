@@ -4,18 +4,24 @@ import {PhotoModel} from "./model/photo.model";
 import {Op, where, fn, col, WhereOptions} from "sequelize";
 import {FindAllDto} from "./dto/find.all.dto";
 import {FindTotalDto} from "./dto/find.total.dto";
-import {FindTotalDatePartDto} from "./dto/find.total.date.part.dto";
 import {TotalDatePartDto} from "./dto/total.date.part.dto";
 import {UserService} from "../user/user.service";
 import {DatePart} from "./enum/date.part.enum";
+import {UtilService} from "../util/util.service";
+import {DateColumn} from "./enum/date.column.enum";
 
 @Injectable()
 export class PhotoService {
 
     constructor(
+
         @InjectModel(PhotoModel)
         private photoModel: typeof PhotoModel,
-        private userService: UserService
+
+        private userService: UserService,
+
+        private utilService: UtilService
+
     ) {}
 
     async findAll(findAllDto: FindAllDto): Promise<PhotoModel[]> {
@@ -45,9 +51,8 @@ export class PhotoService {
 
     }
 
-    async findTotalDatePart(findTotalDatePartDto: FindTotalDatePartDto): Promise<TotalDatePartDto[]> {
+    async findTotalDatePart(dateColumn: DateColumn, datePart: DatePart): Promise<TotalDatePartDto[]> {
 
-        const {datePart, dateColumn} = findTotalDatePartDto
         const group = fn('date_part', datePart, col(dateColumn))
         const photoModels = await this.photoModel.findAll({
             attributes: [
@@ -122,9 +127,9 @@ export class PhotoService {
 
     }
 
-    async findDate(id: string): Promise<Date> {
+    async getFullFilePath(id: string): Promise<string> {
 
-        const photoModel: PhotoModel = await this.photoModel.findByPk(id, {
+        const {mtime} = await this.photoModel.findByPk(id, {
             attributes: {
                 exclude: [
                     'id',
@@ -132,9 +137,9 @@ export class PhotoService {
                     'thumbnail',
                     'preview',
                     'user',
-                    // 'date',
+                    'date',
                     'atime',
-                    'mtime',
+                    // 'mtime',
                     'ctime',
                     'birthtime',
                     'createdAt',
@@ -143,11 +148,23 @@ export class PhotoService {
             }
         })
 
-        if (!photoModel) {
+        if (!mtime) {
             throw new NotFoundException('Фотография не найдена')
         }
 
-        return photoModel.date
+        const {cloudUsername, cloudDirSync} = await this.userService.findById(process.env.NEXTCLOUD_OWNER)
+        const {numberToString} = this.utilService
+
+        return process.env.NEXTCLOUD_PHOTO
+            .split('{username}').join(cloudUsername)
+            .split('{dirSync}').join(cloudDirSync)
+            .split('{year}').join(mtime.getFullYear().toString())
+            .split('{month}').join(numberToString(mtime.getMonth() + 1, 2))
+            .split('{day}').join(numberToString(mtime.getDate(), 2))
+            .split('{hours}').join(numberToString(mtime.getHours(), 2))
+            .split('{minutes}').join(numberToString(mtime.getMinutes(), 2))
+            .split('{seconds}').join(numberToString(mtime.getSeconds(), 2))
+            .split('{id}').join(id)
 
     }
 
@@ -174,34 +191,6 @@ export class PhotoService {
         return {
             [Op.and]: conditions
         }
-
-    }
-
-    numberToString(number: number, size: number, char: string = '0'): string {
-
-        let result = number.toString()
-
-        while (result.length < size) result = char + result
-
-        return result
-
-    }
-
-    async getFullFilePath(id: string): Promise<string> {
-
-        const date = await this.findDate(id)
-        const {cloudUsername, cloudDirSync} = await this.userService.findById(process.env.NEXTCLOUD_OWNER)
-
-        return process.env.NEXTCLOUD_PHOTO
-            .split('{username}').join(cloudUsername)
-            .split('{dirSync}').join(cloudDirSync)
-            .split('{year}').join(date.getFullYear().toString())
-            .split('{month}').join(this.numberToString(date.getMonth() + 1, 2))
-            .split('{day}').join(this.numberToString(date.getDate(), 2))
-            .split('{hours}').join(this.numberToString(date.getHours(), 2))
-            .split('{minutes}').join(this.numberToString(date.getMinutes(), 2))
-            .split('{seconds}').join(this.numberToString(date.getSeconds(), 2))
-            .split('{id}').join(id)
 
     }
 

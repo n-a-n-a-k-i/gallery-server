@@ -1,7 +1,7 @@
 import {CanActivate, ExecutionContext, ForbiddenException, Injectable} from "@nestjs/common";
 import {Observable} from "rxjs";
 import {Reflector} from "@nestjs/core";
-import {Permission} from "../enum/permission.enum";
+import {Permission} from "../../permission/enum/permission.enum";
 import {PERMISSION_KEY} from "../decorator/permissions.decorator";
 import {RequestWithUser} from "../interface/request.with.user.interface";
 
