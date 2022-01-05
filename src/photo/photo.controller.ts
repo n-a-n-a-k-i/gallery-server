@@ -42,7 +42,7 @@ export class PhotoController {
     @ApiOperation({summary: 'Получить количество по частям даты'})
     @ApiResponse({type: TotalDateDto})
     @ApiBearerAuth('accessToken')
-    @Get('/total/:dateColumn')
+    @Get('/total-date/:dateColumn')
     async findTotalDate(
         @Param('dateColumn', new ParseEnumPipe(DateColumn)) dateColumn: DateColumn
     ): Promise<TotalDateDto> {
