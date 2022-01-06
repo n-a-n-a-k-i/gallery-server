@@ -11,6 +11,7 @@ import {RequestWithUser} from "./interface/request.with.user.interface";
 import {RequestWithUserAndCookieRefreshToken} from "./interface/request.with.user.and.cookie.refresh.token.interface";
 import {Token} from "./interface/token.interface";
 import {UserDto} from "../user/dto/user.dto";
+import {User} from "./interface/user.interface";
 
 @ApiTags('Аккаунт')
 @Controller('account')
@@ -22,11 +23,9 @@ export class AccountController {
     @ApiResponse({type: UserDto})
     @ApiBearerAuth('accessToken')
     @Get()
-    async findAccount(@Req() request: RequestWithUser): Promise<UserDto> {
+    async find(@Req() request: RequestWithUser): Promise<User> {
 
-        const userModel = await this.accountService.findAccount(request.user)
-
-        return new UserDto(userModel)
+        return request.user
 
     }
 

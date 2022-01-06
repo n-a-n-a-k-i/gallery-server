@@ -1,6 +1,6 @@
 import {Request} from "express";
-import {Payload} from "./payload.interface";
+import {User} from "./user.interface";
 
 export interface RequestWithUser extends Request {
-    user: Payload
+    user: User
 }

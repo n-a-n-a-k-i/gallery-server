@@ -4,7 +4,7 @@ import {Token} from "./interface/token.interface";
 import {RefreshTokenService} from "../refresh.token/refresh.token.service";
 import {UserModel} from "../user/model/user.model";
 import {JwtService} from "@nestjs/jwt";
-import {Payload} from "./interface/payload.interface";
+import {User} from "./interface/user.interface";
 
 @Injectable()
 export class AccountService {
@@ -15,17 +15,11 @@ export class AccountService {
         private jwtService: JwtService
     ) {}
 
-    async findAccount(payload: Payload): Promise<UserModel> {
+    async signIn(user: User, host: string, userAgent: string): Promise<Token> {
 
-        return await this.userService.findById(payload.id)
+        const token = this.generateToken(user)
 
-    }
-
-    async signIn(payload: Payload, host: string, userAgent: string): Promise<Token> {
-
-        const token = this.generateToken(payload)
-
-        await this.refreshTokenService.create(payload.id, token.refreshToken, host, userAgent)
+        await this.refreshTokenService.create(user.id, token.refreshToken, host, userAgent)
 
         return token
 
@@ -34,8 +28,8 @@ export class AccountService {
     async refresh(id: string, refreshToken: string, host: string, userAgent: string): Promise<Token> {
 
         const userModel = await this.userService.findById(id)
-        const payload = this.generatePayload(userModel)
-        const token = this.generateToken(payload)
+        const user = this.generateUser(userModel)
+        const token = this.generateToken(user)
 
         await this.refreshTokenService.updateRefreshToken(refreshToken, token.refreshToken, host, userAgent)
 
@@ -50,21 +44,21 @@ export class AccountService {
 
     }
 
-    generatePayload(userModel: UserModel): Payload {
+    generateUser(userModel: UserModel): User {
         return {
             id: userModel.id,
             permissions: userModel.permissions.map(permission => permission.value)
         }
     }
 
-    generateToken(payload: Payload): Token {
+    generateToken(user: User): Token {
 
-        const accessToken = this.jwtService.sign(payload, {
+        const accessToken = this.jwtService.sign(user, {
             secret: process.env.JWT_ACCESS_TOKEN_SECRET,
             expiresIn: eval(process.env.JWT_ACCESS_TOKEN_EXPIRES_IN)
         })
 
-        const refreshToken = this.jwtService.sign(payload, {
+        const refreshToken = this.jwtService.sign(user, {
             secret: process.env.JWT_REFRESH_TOKEN_SECRET,
             expiresIn: eval(process.env.JWT_REFRESH_TOKEN_EXPIRES_IN)
         })

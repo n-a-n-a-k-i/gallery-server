@@ -1,8 +1,8 @@
 import {Request} from "express";
-import {Payload} from "./payload.interface";
+import {User} from "./user.interface";
 import {CookieRefreshToken} from "./cookie.refresh.token.interface";
 
 export interface RequestWithUserAndCookieRefreshToken extends Request {
-    user: Payload
+    user: User
     cookies: CookieRefreshToken
 }

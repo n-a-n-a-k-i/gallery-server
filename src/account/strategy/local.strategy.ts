@@ -4,7 +4,7 @@ import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {UserService} from "../../user/user.service";
 import * as bcrypt from 'bcrypt'
 import {AccountService} from "../account.service";
-import {Payload} from "../interface/payload.interface";
+import {User} from "../interface/user.interface";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
@@ -16,7 +16,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
         super();
     }
 
-    async validate(username: string, password: string): Promise<Payload> {
+    async validate(username: string, password: string): Promise<User> {
 
         const userModel = await this.userService.findByUsername(username)
 
@@ -32,7 +32,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
             throw new UnauthorizedException('Неверное имя пользователя или пароль')
         }
 
-        return this.accountService.generatePayload(userModel)
+        return this.accountService.generateUser(userModel)
 
     }
 

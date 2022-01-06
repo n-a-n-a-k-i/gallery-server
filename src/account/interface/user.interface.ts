@@ -1,4 +1,4 @@
-export interface Payload {
+export interface User {
     id: string
     permissions: string[]
 }
