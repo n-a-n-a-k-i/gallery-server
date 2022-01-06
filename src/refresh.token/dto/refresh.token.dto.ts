@@ -44,7 +44,7 @@ export class RefreshTokenDto {
 
     @ApiProperty({
         description: 'Значение',
-        format: 'bcrypt'
+        format: 'crypto'
     })
     readonly value: string
 

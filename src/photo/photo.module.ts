@@ -4,7 +4,7 @@ import { PhotoService } from './photo.service';
 import {SequelizeModule} from "@nestjs/sequelize";
 import {PhotoModel} from "./model/photo.model";
 import {UserModule} from "../user/user.module";
-import {UtilModule} from "../util/util.module";
+import {UtilityModule} from "../utility/utility.module";
 
 @Module({
   controllers: [PhotoController],
@@ -12,7 +12,7 @@ import {UtilModule} from "../util/util.module";
   imports: [
       SequelizeModule.forFeature([PhotoModel]),
       UserModule,
-      UtilModule
+      UtilityModule
   ]
 })
 export class PhotoModule {}

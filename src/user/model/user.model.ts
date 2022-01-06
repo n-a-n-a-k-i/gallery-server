@@ -9,7 +9,10 @@ import {RefreshTokenModel} from "../../refresh.token/model/refresh.token.model";
 @Table({comment: 'Пользователь', tableName: 'user'})
 export class UserModel extends Model<UserModel, UserCreateDto> {
 
-    @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
+    @ApiProperty({
+        description: 'Идентификатор',
+        format: 'uuid'
+    })
     @Column({
         comment: 'Идентификатор',
         type: UUID,
@@ -20,58 +23,148 @@ export class UserModel extends Model<UserModel, UserCreateDto> {
     })
     id: string
 
-    @ApiProperty({description: 'Имя пользователя', example: 'user'})
-    @Column({comment: 'Имя пользователя', type: TEXT, allowNull: false, unique: true})
+    @ApiProperty({
+        description: 'Имя пользователя',
+        example: 'user'
+    })
+    @Column({
+        comment: 'Имя пользователя',
+        type: TEXT,
+        allowNull: false,
+        unique: true
+    })
     username: string
 
-    @ApiProperty({description: 'Пароль', example: 'bcrypt#12345678'})
-    @Column({comment: 'Пароль', type: TEXT, allowNull: false})
+    @ApiProperty({
+        description: 'Пароль',
+        format: 'bcrypt',
+        example: '12345678',
+        minLength: 8
+    })
+    @Column({
+        comment: 'Пароль',
+        type: TEXT,
+        allowNull: false
+    })
     password: string
 
-    @ApiProperty({description: 'Имя пользователя в облаке', example: 'user'})
-    @Column({comment: 'Имя пользователя в облаке', type: TEXT})
+    @ApiProperty({
+        description: 'Облако - имя пользователя',
+        example: 'user',
+        required: false
+    })
+    @Column({
+        comment: 'Облако - имя пользователя',
+        type: TEXT
+    })
     cloudUsername: string
 
-    @ApiProperty({description: 'Пароль в облаке', example: '12345678'})
-    @Column({comment: 'Пароль в облаке', type: TEXT})
+    @ApiProperty({
+        description: 'Облако - пароль',
+        example: '12345678',
+        required: false
+    })
+    @Column({
+        comment: 'Облако - пароль',
+        type: TEXT
+    })
     cloudPassword: string
 
-    @ApiProperty({description: 'Директория сканирования в облаке', example: 'Телефон/Фотографии'})
-    @Column({comment: 'Директория сканирования в облаке', type: TEXT})
-    cloudDirScan: string
+    @ApiProperty({
+        description: 'Облако - путь сканирования',
+        example: 'Телефон/Фотографии',
+        required: false
+    })
+    @Column({
+        comment: 'Облако - путь сканирования',
+        type: TEXT
+    })
+    cloudPathScan: string
 
-    @ApiProperty({description: 'Директория синхронизации в облаке', example: 'Семья/Фотографии'})
-    @Column({comment: 'Директория синхронизации в облаке', type: TEXT})
-    cloudDirSync: string
+    @ApiProperty({
+        description: 'Облако - путь синхронизации',
+        example: 'Семья/Фотографии',
+        required: false
+    })
+    @Column({
+        comment: 'Облако - путь синхронизации',
+        type: TEXT
+    })
+    cloudPathSync: string
 
-    @ApiProperty({description: 'Фамилия', example: 'Фамилия'})
-    @Column({comment: 'Фамилия', type: TEXT})
+    @ApiProperty({
+        description: 'Фамилия',
+        example: 'Фамилия',
+        required: false
+    })
+    @Column({
+        comment: 'Фамилия',
+        type: TEXT
+    })
     surname: string
 
-    @ApiProperty({description: 'Имя', example: 'Имя'})
-    @Column({comment: 'Имя', type: TEXT})
+    @ApiProperty({
+        description: 'Имя',
+        example: 'Имя',
+        required: false
+    })
+    @Column({
+        comment: 'Имя',
+        type: TEXT
+    })
     name: string
 
-    @ApiProperty({description: 'Отчество', example: 'Отчество'})
-    @Column({comment: 'Отчество', type: TEXT})
+    @ApiProperty({
+        description: 'Отчество',
+        example: 'Отчество',
+        required: false
+    })
+    @Column({
+        comment: 'Отчество',
+        type: TEXT
+    })
     patronymic: string
 
-    @ApiProperty({description: 'День рождения', example: '1991-12-03T16:02:00.000Z'})
-    @Column({comment: 'День рождения', type: DATE})
+    @ApiProperty({
+        description: 'День рождения',
+        format: 'date-time',
+        required: false
+    })
+    @Column({
+        comment: 'День рождения',
+        type: DATE
+    })
     birthday: Date
 
-    @ApiProperty({description: 'Электронная почта', example: 'user@gallery.nanaki'})
-    @Column({comment: 'Электронная почта', type: TEXT})
+    @ApiProperty({
+        description: 'Электронная почта',
+        format: 'email',
+        required: false
+    })
+    @Column({
+        comment: 'Электронная почта',
+        type: TEXT
+    })
     email: string
 
-    @ApiProperty({description: 'Телефон', example: '+79995553311'})
-    @Column({comment: 'Телефон', type: TEXT})
+    @ApiProperty({
+        description: 'Телефон',
+        example: '+79995553311',
+        required: false
+    })
+    @Column({
+        comment: 'Телефон',
+        type: TEXT
+    })
     phone: string
 
     @HasMany(() => RefreshTokenModel)
     tokens: RefreshTokenModel[]
 
-    @BelongsToMany(() => PermissionModel, () => UserPermissionModel)
+    @BelongsToMany(
+        () => PermissionModel,
+        () => UserPermissionModel
+    )
     permissions: PermissionModel[]
 
 }

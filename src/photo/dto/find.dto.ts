@@ -4,7 +4,7 @@ import {ApiProperty} from "@nestjs/swagger";
 import {FindTotalDto} from "./find.total.dto";
 import {OrderDirection} from "../enum/order.direction.enum";
 
-export class FindAllDto extends FindTotalDto {
+export class FindDto extends FindTotalDto {
 
     @ApiProperty({
         description: 'Направление сортировки',

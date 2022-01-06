@@ -6,7 +6,10 @@ import {UserModel} from "../../user/model/user.model";
 @Table({comment: 'Токен обновления', tableName: 'refresh_token'})
 export class RefreshTokenModel extends Model {
 
-    @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
+    @ApiProperty({
+        description: 'Идентификатор',
+        format: 'uuid'
+    })
     @Column({
         comment: 'Идентификатор',
         type: UUID,
@@ -17,25 +20,59 @@ export class RefreshTokenModel extends Model {
     })
     id: string
 
-    @ApiProperty({description: 'Пользователь', example: '00000000-0000-0000-0000-000000000000'})
+    @ApiProperty({
+        description: 'Пользователь',
+        format: 'uuid'
+    })
     @ForeignKey(() => UserModel)
-    @Column({comment: 'Пользователь', type: UUID, allowNull: false})
+    @Column({
+        comment: 'Пользователь',
+        type: UUID,
+        allowNull: false
+    })
     user: string
 
-    @ApiProperty({description: 'Хост', example: 'localhost'})
-    @Column({comment: 'Хост', type: TEXT})
+    @ApiProperty({
+        description: 'Хост',
+        format: 'hostname'
+    })
+    @Column({
+        comment: 'Хост',
+        type: TEXT
+    })
     host: string
 
-    @ApiProperty({description: 'Клиентское приложение', example: 'PostmanRuntime/7.28.4'})
-    @Column({comment: 'Клиентское приложение', type: TEXT})
+    @ApiProperty({
+        description: 'Клиентское приложение',
+        example: 'PostmanRuntime'
+    })
+    @Column({
+        comment: 'Клиентское приложение',
+        type: TEXT
+    })
     userAgent: string
 
-    @ApiProperty({description: 'Значение', example: 'crypto#xxxxx.yyyyy.zzzzz'})
-    @Column({comment: 'Значение', type: TEXT, allowNull: false, unique: true})
+    @ApiProperty({
+        description: 'Значение',
+        format: 'crypto'
+    })
+    @Column({
+        comment: 'Значение',
+        type: TEXT,
+        allowNull: false,
+        unique: true
+    })
     value: string
 
-    @ApiProperty({description: 'Дата истекания', example: '2021-10-21T06:32:32.401Z'})
-    @Column({comment: 'Дата истекания', type: DATE, allowNull: false})
+    @ApiProperty({
+        description: 'Дата истекания',
+        format: 'date-time'
+    })
+    @Column({
+        comment: 'Дата истекания',
+        type: DATE,
+        allowNull: false
+    })
     expiredAt: Date
 
     @BelongsTo(() => UserModel)

@@ -21,7 +21,7 @@ export class UserCreateDto {
     readonly password: string
 
     @ApiProperty({
-        description: 'Имя пользователя в облаке',
+        description: 'Облако - имя пользователя',
         example: 'user',
         required: false
     })
@@ -30,7 +30,7 @@ export class UserCreateDto {
     readonly cloudUsername: string
 
     @ApiProperty({
-        description: 'Пароль в облаке',
+        description: 'Облако - пароль',
         example: '12345678',
         required: false
     })
@@ -39,22 +39,22 @@ export class UserCreateDto {
     readonly cloudPassword: string
 
     @ApiProperty({
-        description: 'Директория сканирования в облаке',
+        description: 'Облако - путь сканирования',
         example: 'Телефон/Фотографии',
         required: false
     })
     @IsOptional()
     @IsString()
-    readonly cloudDirScan: string
+    readonly cloudPathScan: string
 
     @ApiProperty({
-        description: 'Директория синхронизации в облаке',
+        description: 'Облако - путь синхронизации',
         example: 'Семья/Фотографии',
         required: false
     })
     @IsOptional()
     @IsString()
-    readonly cloudDirSync: string
+    readonly cloudPathSync: string
 
     @ApiProperty({
         description: 'Фамилия',

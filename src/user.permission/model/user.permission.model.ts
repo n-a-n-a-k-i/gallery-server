@@ -7,7 +7,10 @@ import {PermissionModel} from "../../permission/model/permission.model";
 @Table({comment: 'Пользователь - Разрешение', tableName: 'user_permission'})
 export class UserPermissionModel extends Model<UserPermissionModel> {
 
-    @ApiProperty({description: 'Идентификатор', example: '00000000-0000-0000-0000-000000000000'})
+    @ApiProperty({
+        description: 'Идентификатор',
+        format: 'uuid'
+    })
     @Column({
         comment: 'Идентификатор',
         type: UUID,
@@ -18,14 +21,28 @@ export class UserPermissionModel extends Model<UserPermissionModel> {
     })
     id: string
 
-    @ApiProperty({description: 'Пользователь', example: '00000000-0000-0000-0000-000000000000'})
+    @ApiProperty({
+        description: 'Пользователь',
+        format: 'uuid'
+    })
     @ForeignKey(() => UserModel)
-    @Column({comment: 'Пользователь', type: UUID, allowNull: false})
+    @Column({
+        comment: 'Пользователь',
+        type: UUID,
+        allowNull: false
+    })
     user: string
 
-    @ApiProperty({description: 'Разрешение', example: '00000000-0000-0000-0000-000000000000'})
+    @ApiProperty({
+        description: 'Разрешение',
+        format: 'uuid'
+    })
     @ForeignKey(() => PermissionModel)
-    @Column({comment: 'Разрешение', type: UUID, allowNull: false})
+    @Column({
+        comment: 'Разрешение',
+        type: UUID,
+        allowNull: false
+    })
     permission: string
 
 }

@@ -11,8 +11,8 @@ export class UserDto {
         this.username = userModel.username
 
         this.cloudUsername = userModel.cloudUsername
-        this.cloudDirScan = userModel.cloudDirScan
-        this.cloudDirSync = userModel.cloudDirSync
+        this.cloudPathScan = userModel.cloudPathScan
+        this.cloudPathSync = userModel.cloudPathSync
 
         this.surname = userModel.surname
         this.name = userModel.name
@@ -41,25 +41,25 @@ export class UserDto {
     readonly username: string
 
     @ApiProperty({
-        description: 'Имя пользователя в облаке',
+        description: 'Облако - имя пользователя',
         example: 'user',
         required: false
     })
     readonly cloudUsername: string
 
     @ApiProperty({
-        description: 'Директория сканирования в облаке',
+        description: 'Облако - путь сканирования',
         example: 'Телефон/Фотографии',
         required: false
     })
-    readonly cloudDirScan: string
+    readonly cloudPathScan: string
 
     @ApiProperty({
-        description: 'Директория синхронизации в облаке',
+        description: 'Облако - путь синхронизации',
         example: 'Семья/Фотографии',
         required: false
     })
-    readonly cloudDirSync: string
+    readonly cloudPathSync: string
 
     @ApiProperty({
         description: 'Фамилия',
