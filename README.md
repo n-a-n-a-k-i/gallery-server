@@ -57,10 +57,33 @@ docker run --name gallery_database --restart=always -p 55432:5432 -v gallery_dat
 
 ## Postman
 
-Предзапросный скрипт:
+Переменные:
+
+```ts
+export enum DateColumn {
+    date = 'date',
+    atime = 'atime',
+    mtime = 'mtime',
+    ctime = 'ctime',
+    birthtime = 'birthtime',
+    createdAt = 'createdAt',
+    updatedAt = 'updatedAt'
+}
+
+class Variables {
+    username: string = 'user'
+    password: string = '12345678'
+    server: string = 'http://localhost:5001'
+    photoId: string = '00000000-0000-0000-0000-000000000000'
+    dateColumn: DateColumn = DateColumn.mtime
+    accessToken: string = 'xxx.yyy.zzz'
+}
+```
+
+Предзапросный скрипт для `{{server}}/account`:
 
 ```js
-const server = pm.collectionVariables.get("server")
+const server = pm.collectionVariables.get('server')
 
 pm.sendRequest(`${server}/account/sign-out`, (error, response) => {
 
@@ -75,17 +98,23 @@ pm.sendRequest(`${server}/account/sign-out`, (error, response) => {
         body: {
             mode: 'raw',
             raw: JSON.stringify({
-                username: pm.collectionVariables.get("username"),
-                password: pm.collectionVariables.get("password")
+                username: pm.collectionVariables.get('username'),
+                password: pm.collectionVariables.get('password')
             })
         }
     }, (error, response) => {
         console.log(response)
 
         if (error) console.error(error)
-        if (response.code === 200) pm.collectionVariables.set("accessToken", response.json().accessToken)
+        if (response.code === 200) pm.collectionVariables.set('accessToken', response.json().accessToken)
 
     })
 
 })
+```
+
+Предзапросный скрипт для `{{server}}/account/sign-out`:
+
+```js
+pm.collectionVariables.unset('accessToken')
 ```

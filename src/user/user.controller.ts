@@ -23,7 +23,7 @@ export class UserController {
         return new UserDto(userModel)
     }
 
-    @ApiOperation({summary: 'Получить всех пользователей'})
+    @ApiOperation({summary: 'Поиск пользователей'})
     @ApiResponse({type: [UserDto]})
     @ApiBearerAuth('accessToken')
     @Get()

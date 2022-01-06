@@ -10,6 +10,9 @@ export class PermissionService {
         private permissionModel: typeof PermissionModel
     ) {}
 
+    /**
+     * Поиск разрешений
+     */
     async findAll(): Promise<PermissionModel[]> {
         return await this.permissionModel.findAll()
     }

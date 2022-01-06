@@ -9,7 +9,7 @@ export class PermissionController {
 
     constructor(private readonly permissionService: PermissionService) {}
 
-    @ApiOperation({summary: 'Получить все разрешения'})
+    @ApiOperation({summary: 'Поиск разрешений'})
     @ApiResponse({type: [PermissionDto]})
     @ApiBearerAuth('accessToken')
     @Get()

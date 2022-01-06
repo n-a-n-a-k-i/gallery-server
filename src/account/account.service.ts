@@ -15,6 +15,12 @@ export class AccountService {
         private jwtService: JwtService
     ) {}
 
+    /**
+     * Вход
+     * @param user
+     * @param host
+     * @param userAgent
+     */
     async signIn(user: User, host: string, userAgent: string): Promise<Token> {
 
         const token = this.generateToken(user)
@@ -25,6 +31,13 @@ export class AccountService {
 
     }
 
+    /**
+     * Обновление токенов
+     * @param id
+     * @param refreshToken
+     * @param host
+     * @param userAgent
+     */
     async refresh(id: string, refreshToken: string, host: string, userAgent: string): Promise<Token> {
 
         const userModel = await this.userService.findById(id)
@@ -37,6 +50,10 @@ export class AccountService {
 
     }
 
+    /**
+     * Выход
+     * @param refreshToken
+     */
     async signOut(refreshToken: string): Promise<void> {
 
         await this.refreshTokenService.removeByRefreshToken(refreshToken)
@@ -44,6 +61,10 @@ export class AccountService {
 
     }
 
+    /**
+     * Генерация пользователя
+     * @param userModel
+     */
     generateUser(userModel: UserModel): User {
         return {
             id: userModel.id,
@@ -51,6 +72,10 @@ export class AccountService {
         }
     }
 
+    /**
+     * Генерация токенов
+     * @param user
+     */
     generateToken(user: User): Token {
 
         const accessToken = this.jwtService.sign(user, {

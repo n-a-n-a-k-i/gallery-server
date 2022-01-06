@@ -12,6 +12,13 @@ export class RefreshTokenService {
         private refreshTokenModel: typeof RefreshTokenModel
     ) {}
 
+    /**
+     * Создание токена обновления
+     * @param user
+     * @param refreshToken
+     * @param host
+     * @param userAgent
+     */
     async create(user: string, refreshToken: string, host: string, userAgent: string): Promise<RefreshTokenModel> {
 
         const value = this.hashRefreshToken(refreshToken)
@@ -33,6 +40,10 @@ export class RefreshTokenService {
 
     }
 
+    /**
+     * Поиск токенов обновления по пользователю
+     * @param user
+     */
     async findByUser(user): Promise<RefreshTokenModel[]> {
 
         return await this.refreshTokenModel.findAll({
@@ -41,6 +52,10 @@ export class RefreshTokenService {
 
     }
 
+    /**
+     * Поиск токена обновления по токену обновления
+     * @param refreshToken
+     */
     async findByRefreshToken(refreshToken: string): Promise<RefreshTokenModel> {
 
         const value = this.hashRefreshToken(refreshToken)
@@ -51,6 +66,13 @@ export class RefreshTokenService {
 
     }
 
+    /**
+     * Обновление токена обновления по токену обновления
+     * @param refreshTokenOld
+     * @param refreshToken
+     * @param host
+     * @param userAgent
+     */
     async updateRefreshToken(refreshTokenOld, refreshToken, host, userAgent): Promise<RefreshTokenModel> {
 
         const refreshTokenModel = await this.findByRefreshToken(refreshTokenOld)
@@ -68,6 +90,10 @@ export class RefreshTokenService {
 
     }
 
+    /**
+     * Удаление токена обновления по токену обновления
+     * @param refreshToken
+     */
     async removeByRefreshToken(refreshToken: string): Promise<void> {
 
         const value = this.hashRefreshToken(refreshToken)
@@ -78,6 +104,9 @@ export class RefreshTokenService {
 
     }
 
+    /**
+     * Удаление токенов обновления с истёкшим сроком действия
+     */
     async removeExpired(): Promise<number> {
 
         const total = await this.refreshTokenModel.destroy({
@@ -94,6 +123,9 @@ export class RefreshTokenService {
 
     }
 
+    /**
+     * Генерация даты истекания срока действия
+     */
     generateExpiredAt(): Date {
 
         const expiresIn: number = eval(process.env.JWT_REFRESH_TOKEN_EXPIRES_IN)
@@ -103,6 +135,10 @@ export class RefreshTokenService {
 
     }
 
+    /**
+     * Генерация токена обновления
+     * @param refreshToken
+     */
     hashRefreshToken(refreshToken: string): string {
 
         const algorithm = process.env.CRYPTO_REFRESH_TOKEN_ALGORITHM

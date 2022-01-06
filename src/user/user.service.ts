@@ -14,6 +14,10 @@ export class UserService {
         private userModel: typeof UserModel
     ) {}
 
+    /**
+     * Создание пользователя
+     * @param userCreateDto
+     */
     async create(userCreateDto: UserCreateDto): Promise<UserModel> {
 
         const password = await this.hashPassword(userCreateDto.password)
@@ -34,6 +38,9 @@ export class UserService {
 
     }
 
+    /**
+     * Поиск пользователей
+     */
     async findAll(): Promise<UserModel[]> {
         return await this.userModel.findAll({
             include: [{
@@ -42,6 +49,10 @@ export class UserService {
         })
     }
 
+    /**
+     * Поиск пользователя по идентификатору
+     * @param id
+     */
     async findById(id: string): Promise<UserModel> {
 
         return await this.userModel.findByPk(id, {
@@ -52,6 +63,10 @@ export class UserService {
 
     }
 
+    /**
+     * Поиск пользователя по имени пользователя
+     * @param username
+     */
     async findByUsername(username: string): Promise<UserModel> {
 
         return await this.userModel.findOne({
@@ -63,6 +78,10 @@ export class UserService {
 
     }
 
+    /**
+     * Хеширование пароля
+     * @param password
+     */
     async hashPassword(password: string): Promise<string> {
 
         const rounds = Number(process.env.BCRYPT_PASSWORD_SALT_ROUNDS)

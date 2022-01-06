@@ -12,15 +12,21 @@ import {RequestWithUserAndCookieRefreshToken} from "./interface/request.with.use
 import {Token} from "./interface/token.interface";
 import {UserDto} from "../user/dto/user.dto";
 import {User} from "./interface/user.interface";
+import {RefreshTokenDto} from "../refresh.token/dto/refresh.token.dto";
+import {RefreshTokenService} from "../refresh.token/refresh.token.service";
+import {UserService} from "../user/user.service";
 
 @ApiTags('Аккаунт')
 @Controller('account')
 export class AccountController {
 
-    constructor(private accountService: AccountService) {}
+    constructor(
+        private accountService: AccountService,
+        private userService: UserService,
+        private refreshTokenService :RefreshTokenService
+    ) {}
 
-    @ApiOperation({summary: 'Аккаунт'})
-    @ApiResponse({type: UserDto})
+    @ApiOperation({summary: 'Пользователь из запроса'})
     @ApiBearerAuth('accessToken')
     @Get()
     async find(@Req() request: RequestWithUser): Promise<User> {
@@ -29,7 +35,31 @@ export class AccountController {
 
     }
 
-    @ApiOperation({summary: 'Войти'})
+    @ApiOperation({summary: 'Поиск пользователя по пользователю из запроса'})
+    @ApiResponse({type: UserDto})
+    @ApiBearerAuth('accessToken')
+    @Get('/user')
+    async findUser(@Req() request: RequestWithUser): Promise<UserDto> {
+
+        const userModel = await this.userService.findById(request.user.id)
+
+        return new UserDto(userModel)
+
+    }
+
+    @ApiOperation({summary: 'Поиск токенов обновления по пользователю из запроса'})
+    @ApiResponse({type: [RefreshTokenDto]})
+    @ApiBearerAuth('accessToken')
+    @Get('/refresh-token')
+    async findRefreshToken(@Req() request: RequestWithUser): Promise<RefreshTokenDto[]> {
+
+        const tokenModels = await this.refreshTokenService.findByUser(request.user.id)
+
+        return tokenModels.map(tokenModel => new RefreshTokenDto(tokenModel))
+
+    }
+
+    @ApiOperation({summary: 'Вход'})
     @ApiResponse({type: AccessTokenDto})
     @ApiBody({type: SignInDto})
     @HttpCode(200)
@@ -51,7 +81,7 @@ export class AccountController {
 
     }
 
-    @ApiOperation({summary: 'Обновить токен'})
+    @ApiOperation({summary: 'Обновление токенов'})
     @ApiResponse({type: AccessTokenDto})
     @ApiCookieAuth('refreshToken')
     @Public()
@@ -72,7 +102,7 @@ export class AccountController {
 
     }
 
-    @ApiOperation({summary: 'Выйти'})
+    @ApiOperation({summary: 'Выход'})
     @ApiCookieAuth('refreshToken')
     @Public()
     @UseGuards(JwtRefreshTokenGuard)
@@ -90,9 +120,13 @@ export class AccountController {
 
     }
 
-    // Установка Cookie:
-    // 1. Токен доступа для запроса миниатюр и предпросмотров напрямую из src параметра в тегах img.
-    // 2. Токен обновления для запроса новых токенов и выхода из системы.
+    /**
+     * Установка Cookie:
+     * 1. Токен доступа для запроса миниатюр и предпросмотров напрямую из src параметра в тегах img.
+     * 2. Токен обновления для запроса новых токенов и выхода из системы.
+     * @param response
+     * @param token
+     */
     setToken(response: Response, token: Token) {
 
         const secure = eval(process.env.HTTP_COOKIE_SECURE);
