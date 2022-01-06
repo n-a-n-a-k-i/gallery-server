@@ -1,5 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {RefreshTokenModel} from "../model/refresh.token.model";
+import {IsDate} from "class-validator";
 
 export class RefreshTokenDto {
 
@@ -52,18 +53,21 @@ export class RefreshTokenDto {
         description: 'Дата истекания',
         format: 'date-time'
     })
+    @IsDate()
     readonly expiredAt: Date
 
     @ApiProperty({
         description: 'Дата создания',
         format: 'date-time'
     })
+    @IsDate()
     readonly createdAt: Date
 
     @ApiProperty({
         description: 'Дата изменения',
         format: 'date-time'
     })
+    @IsDate()
     readonly updatedAt: Date
 
 }

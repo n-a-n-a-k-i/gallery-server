@@ -1,5 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {Token} from "../interface/token.interface";
+import {IsString} from "class-validator";
 
 export class AccessTokenDto {
 
@@ -11,6 +12,7 @@ export class AccessTokenDto {
         description: 'Токен доступа',
         format: 'jwt'
     })
+    @IsString()
     readonly accessToken: string
 
 }

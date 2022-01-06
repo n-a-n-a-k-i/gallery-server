@@ -1,7 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {UserModel} from "../model/user.model";
 import {PermissionDto} from "../../permission/dto/permission.dto";
-import {IsDate, IsEmail, IsPhoneNumber, IsString} from "class-validator";
+import {IsBoolean, IsDate, IsEmail, IsOptional, IsPhoneNumber, IsString, MinLength} from "class-validator";
 
 export class UserDto {
 
@@ -9,6 +9,7 @@ export class UserDto {
 
         this.id = userModel.id
         this.username = userModel.username
+        this.isSync = userModel.isSync
 
         this.cloudUsername = userModel.cloudUsername
         this.cloudPathScan = userModel.cloudPathScan
@@ -36,15 +37,28 @@ export class UserDto {
 
     @ApiProperty({
         description: 'Имя пользователя',
-        example: 'user'
+        example: 'user',
+        minLength: 4
     })
+    @MinLength(4)
     readonly username: string
+
+    @ApiProperty({
+        description: 'Состояние синхронизации',
+        example: false,
+        required: false
+    })
+    @IsOptional()
+    @IsBoolean()
+    readonly isSync: boolean
 
     @ApiProperty({
         description: 'Облако - имя пользователя',
         example: 'user',
         required: false
     })
+    @IsOptional()
+    @IsString()
     readonly cloudUsername: string
 
     @ApiProperty({
@@ -52,6 +66,8 @@ export class UserDto {
         example: 'Телефон/Фотографии',
         required: false
     })
+    @IsOptional()
+    @IsString()
     readonly cloudPathScan: string
 
     @ApiProperty({
@@ -59,6 +75,8 @@ export class UserDto {
         example: 'Семья/Фотографии',
         required: false
     })
+    @IsOptional()
+    @IsString()
     readonly cloudPathSync: string
 
     @ApiProperty({
@@ -66,6 +84,7 @@ export class UserDto {
         example: 'Фамилия',
         required: false
     })
+    @IsOptional()
     @IsString()
     readonly surname: string
 
@@ -74,6 +93,7 @@ export class UserDto {
         example: 'Имя',
         required: false
     })
+    @IsOptional()
     @IsString()
     readonly name: string
 
@@ -82,6 +102,7 @@ export class UserDto {
         example: 'Отчество',
         required: false
     })
+    @IsOptional()
     @IsString()
     readonly patronymic: string
 
@@ -90,6 +111,7 @@ export class UserDto {
         format: 'date-time',
         required: false
     })
+    @IsOptional()
     @IsDate()
     readonly birthday: Date
 
@@ -98,6 +120,7 @@ export class UserDto {
         format: 'email',
         required: false
     })
+    @IsOptional()
     @IsEmail()
     readonly email: string
 
@@ -106,6 +129,7 @@ export class UserDto {
         example: '+79995553311',
         required: false
     })
+    @IsOptional()
     @IsPhoneNumber()
     readonly phone: string
 
@@ -113,12 +137,14 @@ export class UserDto {
         description: 'Дата создания',
         format: 'date-time'
     })
+    @IsDate()
     readonly createdAt: Date
 
     @ApiProperty({
         description: 'Дата изменения',
         format: 'date-time'
     })
+    @IsDate()
     readonly updatedAt: Date
 
     @ApiProperty({

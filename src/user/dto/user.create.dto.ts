@@ -1,5 +1,5 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {IsDate, IsEmail, IsOptional, IsPhoneNumber, IsString, MinLength} from "class-validator";
+import {IsBoolean, IsDate, IsEmail, IsOptional, IsPhoneNumber, IsString, MinLength} from "class-validator";
 
 export class UserCreateDto {
 
@@ -19,6 +19,15 @@ export class UserCreateDto {
     })
     @MinLength(8)
     readonly password: string
+
+    @ApiProperty({
+        description: 'Состояние синхронизации',
+        example: false,
+        required: false
+    })
+    @IsOptional()
+    @IsBoolean()
+    readonly isSync: boolean
 
     @ApiProperty({
         description: 'Облако - имя пользователя',

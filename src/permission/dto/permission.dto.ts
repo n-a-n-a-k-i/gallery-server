@@ -1,6 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {PermissionModel} from "../model/permission.model";
 import {Permission} from "../enum/permission.enum";
+import {IsDate} from "class-validator";
 
 export class PermissionDto {
 
@@ -35,12 +36,14 @@ export class PermissionDto {
         description: 'Дата создания',
         format: 'date-time'
     })
+    @IsDate()
     readonly createdAt: Date
 
     @ApiProperty({
         description: 'Дата изменения',
         format: 'date-time'
     })
+    @IsDate()
     readonly updatedAt: Date
 
 }

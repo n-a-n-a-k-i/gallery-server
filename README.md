@@ -36,7 +36,7 @@ NEXTCLOUD_WEBDAV=https://cloud.example.org/remote.php/dav
 NEXTCLOUD_PATH=/var/lib/docker/volumes/nextcloud_app/_data/data
 NEXTCLOUD_USER_PATH={username}/files/{pathSync}/{year}/{month}
 NEXTCLOUD_FILE_NAME="{year}-{month}-{day} {hours}-{minutes}-{seconds} {id}"
-NEXTCLOUD_FILE_EXT=.jpg
+NEXTCLOUD_FILE_EXT=jpg
 ```
 
 ## Запуск

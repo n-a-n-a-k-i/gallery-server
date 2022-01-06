@@ -1,5 +1,5 @@
 import {BelongsToMany, Column, HasMany, Model, Table} from "sequelize-typescript";
-import {DATE, literal, TEXT, UUID} from "sequelize";
+import {BOOLEAN, DATE, literal, TEXT, UUID} from "sequelize";
 import {ApiProperty} from "@nestjs/swagger";
 import {UserCreateDto} from "../dto/user.create.dto";
 import {PermissionModel} from "../../permission/model/permission.model";
@@ -47,6 +47,17 @@ export class UserModel extends Model<UserModel, UserCreateDto> {
         allowNull: false
     })
     password: string
+
+    @ApiProperty({
+        description: 'Состояние синхронизации',
+        example: false,
+        required: false
+    })
+    @Column({
+        comment: 'Состояние синхронизации',
+        type: BOOLEAN
+    })
+    isSync: boolean
 
     @ApiProperty({
         description: 'Облако - имя пользователя',

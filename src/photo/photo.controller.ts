@@ -42,8 +42,8 @@ export class PhotoController {
 
         const fullFilePath: string = await this.photoService.download(id)
 
-        response.attachment(basename(fullFilePath))
         response.contentType('image/jpeg')
+        response.attachment(basename(fullFilePath))
 
         return new StreamableFile(createReadStream(fullFilePath))
 
@@ -89,8 +89,8 @@ export class PhotoController {
         const {thumbnail, mtime} = await this.photoService.findThumbnail(id)
         const fileBaseThumbnail = this.photoService.getFileBaseThumbnail(id, mtime)
 
-        response.setHeader('Content-Disposition', `inline; filename="${fileBaseThumbnail}"`)
         response.contentType('image/jpeg')
+        response.setHeader('Content-Disposition', `inline; filename="${fileBaseThumbnail}"`)
 
         return new StreamableFile(thumbnail)
 
@@ -106,8 +106,8 @@ export class PhotoController {
         const {preview, mtime} = await this.photoService.findPreview(id)
         const fileBasePreview = this.photoService.getFileBasePreview(id, mtime)
 
-        response.setHeader('Content-Disposition', `inline; filename="${fileBasePreview}"`)
         response.contentType('image/jpeg')
+        response.setHeader('Content-Disposition', `inline; filename="${fileBasePreview}"`)
 
         return new StreamableFile(preview)
 
