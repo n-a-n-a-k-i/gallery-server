@@ -71,9 +71,9 @@ export class PhotoController {
 
         const totalDateDto: TotalDateDto = new TotalDateDto()
 
-        totalDateDto.years = await this.photoService.findTotalDatePart(dateColumn, DatePart.year)
-        totalDateDto.months = await this.photoService.findTotalDatePart(dateColumn, DatePart.month)
-        totalDateDto.days = await this.photoService.findTotalDatePart(dateColumn, DatePart.day)
+        totalDateDto.totalYears = await this.photoService.findTotalDatePart(dateColumn, DatePart.year)
+        totalDateDto.totalMonths = await this.photoService.findTotalDatePart(dateColumn, DatePart.month)
+        totalDateDto.totalDays = await this.photoService.findTotalDatePart(dateColumn, DatePart.day)
 
         return totalDateDto
 

@@ -8,20 +8,20 @@ export class TotalDateDto {
         type: [TotalDatePartDto],
         example: []
     })
-    years: TotalDatePartDto[]
+    totalYears: TotalDatePartDto[]
 
     @ApiProperty({
         description: 'Количество по месяцам',
         type: [TotalDatePartDto],
         example: []
     })
-    months: TotalDatePartDto[]
+    totalMonths: TotalDatePartDto[]
 
     @ApiProperty({
         description: 'Количество по дням',
         type: [TotalDatePartDto],
         example: []
     })
-    days: TotalDatePartDto[]
+    totalDays: TotalDatePartDto[]
 
 }
