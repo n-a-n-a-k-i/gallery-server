@@ -10,6 +10,7 @@ import {DatePart} from "./enum/date.part.enum";
 import {UtilityService} from "../utility/utility.service";
 import {DateColumn} from "./enum/date.column.enum";
 import {join} from 'path'
+import {OrderDirection} from "./enum/order.direction.enum";
 
 @Injectable()
 export class PhotoService {
@@ -99,8 +100,9 @@ export class PhotoService {
      * Поиск количества фотографий по частям даты
      * @param dateColumn
      * @param datePart
+     * @param orderDirection
      */
-    async findTotalDatePart(dateColumn: DateColumn, datePart: DatePart): Promise<TotalDatePartDto[]> {
+    async findTotalDatePart(dateColumn: DateColumn, datePart: DatePart, orderDirection: OrderDirection): Promise<TotalDatePartDto[]> {
 
         const group = fn('date_part', datePart, col(dateColumn))
         const photoModels = await this.photoModel.findAll({
@@ -110,7 +112,7 @@ export class PhotoService {
             ],
             group,
             order: [
-                col('value')
+                [col('value'), orderDirection]
             ]
         })
 

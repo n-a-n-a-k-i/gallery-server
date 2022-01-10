@@ -11,6 +11,7 @@ import {PhotoDto} from "./dto/photo.dto";
 import {FindTotalDto} from "./dto/find.total.dto";
 import {Response} from "express";
 import {PhotoModel} from "./model/photo.model";
+import {OrderDirection} from "./enum/order.direction.enum";
 
 @ApiTags('Фотография')
 @Controller('photo')
@@ -71,9 +72,9 @@ export class PhotoController {
 
         const totalDateDto: TotalDateDto = new TotalDateDto()
 
-        totalDateDto.totalYears = await this.photoService.findTotalDatePart(dateColumn, DatePart.year)
-        totalDateDto.totalMonths = await this.photoService.findTotalDatePart(dateColumn, DatePart.month)
-        totalDateDto.totalDays = await this.photoService.findTotalDatePart(dateColumn, DatePart.day)
+        totalDateDto.totalYears = await this.photoService.findTotalDatePart(dateColumn, DatePart.year, OrderDirection.DESC)
+        totalDateDto.totalMonths = await this.photoService.findTotalDatePart(dateColumn, DatePart.month, OrderDirection.ASC)
+        totalDateDto.totalDays = await this.photoService.findTotalDatePart(dateColumn, DatePart.day, OrderDirection.ASC)
 
         return totalDateDto
 
