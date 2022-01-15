@@ -1,9 +1,9 @@
 import {BadRequestException, Injectable, InternalServerErrorException} from '@nestjs/common';
 import {UserModel} from "./model/user.model";
 import {InjectModel} from "@nestjs/sequelize";
-import {UserCreateDto} from "./dto/user.create.dto";
+import {UserCreateDto} from "./dto/user-create.dto";
 import * as bcrypt from 'bcrypt'
-import {UniqueConstraintError} from "sequelize";
+import {Op, UniqueConstraintError} from "sequelize";
 import {PermissionModel} from "../permission/model/permission.model";
 
 @Injectable()
@@ -46,6 +46,29 @@ export class UserService {
             include: [{
                 model: PermissionModel
             }]
+        })
+    }
+
+    /**
+     * Поиск пользователей для синхронизации
+     */
+    async findSync(): Promise<UserModel[]> {
+        return await this.userModel.findAll({
+            where: {
+                isSync: true,
+                cloudUsername: {
+                    [Op.not]: null
+                },
+                cloudPassword: {
+                    [Op.not]: null
+                },
+                cloudPathScan: {
+                    [Op.not]: null
+                },
+                cloudPathSync: {
+                    [Op.not]: null
+                }
+            }
         })
     }
 

@@ -2,7 +2,7 @@ import {Injectable} from "@nestjs/common";
 import {PassportStrategy} from "@nestjs/passport";
 import {ExtractJwt, Strategy} from "passport-jwt";
 import {User} from "../interface/user.interface";
-import {RequestWithCookieAccessToken} from "../interface/request.with.cookie.access.token.interface";
+import {RequestWithCookieAccessToken} from "../interface/request-with-cookie-access-token.interface";
 import {Request} from "express";
 
 @Injectable()

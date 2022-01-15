@@ -2,22 +2,27 @@ import {Controller, Get, Param, ParseEnumPipe, ParseUUIDPipe, Query, Res, Stream
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {PhotoService} from "./photo.service";
 import {FindDto} from "./dto/find.dto";
-import {basename} from 'path';
 import {createReadStream} from "fs";
-import {DateColumn} from "./enum/date.column.enum";
-import {TotalDateDto} from "./dto/total.date.dto";
-import {DatePart} from "./enum/date.part.enum";
+import {DateColumn} from "./enum/date-column.enum";
+import {TotalDateDto} from "./dto/total-date.dto";
+import {DatePart} from "./enum/date-part.enum";
 import {PhotoDto} from "./dto/photo.dto";
-import {FindTotalDto} from "./dto/find.total.dto";
+import {FindTotalDto} from "./dto/find-total.dto";
 import {Response} from "express";
 import {PhotoModel} from "./model/photo.model";
-import {OrderDirection} from "./enum/order.direction.enum";
+import {OrderDirection} from "./enum/order-direction.enum";
+import {UserService} from "../user/user.service";
+import {CloudUtilityService} from "../cloud/cloud-utility.service";
 
 @ApiTags('Фотография')
 @Controller('photo')
 export class PhotoController {
 
-    constructor(private readonly photoService: PhotoService) {}
+    constructor(
+        private readonly photoService: PhotoService,
+        private readonly userService: UserService,
+        private readonly cloudUtilityService: CloudUtilityService
+    ) {}
 
     @ApiOperation({summary: 'Поиск фотографий'})
     @ApiResponse({type: [PhotoDto]})
@@ -41,10 +46,13 @@ export class PhotoController {
         @Param('id', new ParseUUIDPipe({version: '4'})) id: string
     ): Promise<StreamableFile> {
 
-        const fullFilePath: string = await this.photoService.download(id)
+        const {cloudUsername, cloudPathSync} = await this.userService.findById(process.env.NEXTCLOUD_OWNER)
+        const mtime: Date = await this.photoService.findMtime(id);
+        const fullFilePath = this.cloudUtilityService.getFullFilePath(cloudUsername, cloudPathSync, mtime, id)
+        const fileBase = this.cloudUtilityService.getFileBase(mtime, id)
 
         response.contentType('image/jpeg')
-        response.attachment(basename(fullFilePath))
+        response.attachment(fileBase)
 
         return new StreamableFile(createReadStream(fullFilePath))
 
@@ -88,7 +96,7 @@ export class PhotoController {
     ): Promise<StreamableFile> {
 
         const {thumbnail, mtime} = await this.photoService.findThumbnail(id)
-        const fileBaseThumbnail = this.photoService.getFileBaseThumbnail(id, mtime)
+        const fileBaseThumbnail = this.cloudUtilityService.getFileBaseThumbnail(mtime, id)
 
         response.contentType('image/jpeg')
         response.setHeader('Content-Disposition', `inline; filename="${fileBaseThumbnail}"`)
@@ -105,7 +113,7 @@ export class PhotoController {
     ): Promise<StreamableFile> {
 
         const {preview, mtime} = await this.photoService.findPreview(id)
-        const fileBasePreview = this.photoService.getFileBasePreview(id, mtime)
+        const fileBasePreview = this.cloudUtilityService.getFileBasePreview(mtime, id)
 
         response.contentType('image/jpeg')
         response.setHeader('Content-Disposition', `inline; filename="${fileBasePreview}"`)

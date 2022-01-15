@@ -2,7 +2,7 @@ import {Body, Controller, Get, Post} from '@nestjs/common';
 import {UserService} from "./user.service";
 import {ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {UserDto} from "./dto/user.dto";
-import {UserCreateDto} from "./dto/user.create.dto";
+import {UserCreateDto} from "./dto/user-create.dto";
 import {Permissions} from "../account/decorator/permissions.decorator";
 import {Permission} from "../permission/enum/permission.enum";
 

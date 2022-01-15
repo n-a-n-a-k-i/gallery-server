@@ -1,9 +1,9 @@
 import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {PassportStrategy} from "@nestjs/passport";
 import {ExtractJwt, Strategy} from "passport-jwt";
-import {RefreshTokenService} from "../../refresh.token/refresh.token.service";
-import {RequestWithCookieRefreshToken} from "../interface/request.with.cookie.refresh.token.interface";
-import {RequestWithUserAndCookieRefreshToken} from "../interface/request.with.user.and.cookie.refresh.token.interface";
+import {RefreshTokenService} from "../../refresh-token/refresh-token.service";
+import {RequestWithCookieRefreshToken} from "../interface/request-with-cookie-refresh-token.interface";
+import {RequestWithUserAndCookieRefreshToken} from "../interface/request-with-user-and-cookie-refresh-token.interface";
 import {User} from "../interface/user.interface";
 
 @Injectable()

@@ -4,16 +4,16 @@ import {AccountService} from "./account.service";
 import {Public} from "./decorator/public.decorator";
 import {ApiBearerAuth, ApiBody, ApiCookieAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {Response} from "express";
-import {JwtRefreshTokenGuard} from "./guard/jwt.refresh.token.guard";
-import {AccessTokenDto} from "./dto/access.token.dto";
-import {SignInDto} from "./dto/sign.in.dto";
-import {RequestWithUser} from "./interface/request.with.user.interface";
-import {RequestWithUserAndCookieRefreshToken} from "./interface/request.with.user.and.cookie.refresh.token.interface";
+import {JwtRefreshTokenGuard} from "./guard/jwt-refresh-token.guard";
+import {AccessTokenDto} from "./dto/access-token.dto";
+import {SignInDto} from "./dto/sign-in.dto";
+import {RequestWithUser} from "./interface/request-with-user.interface";
+import {RequestWithUserAndCookieRefreshToken} from "./interface/request-with-user-and-cookie-refresh-token.interface";
 import {Token} from "./interface/token.interface";
 import {UserDto} from "../user/dto/user.dto";
 import {User} from "./interface/user.interface";
-import {RefreshTokenDto} from "../refresh.token/dto/refresh.token.dto";
-import {RefreshTokenService} from "../refresh.token/refresh.token.service";
+import {RefreshTokenDto} from "../refresh-token/dto/refresh-token.dto";
+import {RefreshTokenService} from "../refresh-token/refresh-token.service";
 import {UserService} from "../user/user.service";
 
 @ApiTags('Аккаунт')
@@ -29,7 +29,7 @@ export class AccountController {
     @ApiOperation({summary: 'Пользователь из запроса'})
     @ApiBearerAuth('accessToken')
     @Get()
-    async find(@Req() request: RequestWithUser): Promise<User> {
+    async get(@Req() request: RequestWithUser): Promise<User> {
 
         return request.user
 

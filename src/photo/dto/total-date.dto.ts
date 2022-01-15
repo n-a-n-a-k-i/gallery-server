@@ -1,4 +1,4 @@
-import {TotalDatePartDto} from "./total.date.part.dto";
+import {TotalDatePartDto} from "./total-date-part.dto";
 import {ApiProperty} from "@nestjs/swagger";
 
 export class TotalDateDto {

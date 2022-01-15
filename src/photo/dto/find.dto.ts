@@ -1,8 +1,8 @@
 import {IsEnum, IsInt, Max, Min} from "class-validator";
 import {Type} from "class-transformer";
 import {ApiProperty} from "@nestjs/swagger";
-import {FindTotalDto} from "./find.total.dto";
-import {OrderDirection} from "../enum/order.direction.enum";
+import {FindTotalDto} from "./find-total.dto";
+import {OrderDirection} from "../enum/order-direction.enum";
 
 export class FindDto extends FindTotalDto {
 

@@ -1,5 +1,5 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {RefreshTokenModel} from "../model/refresh.token.model";
+import {RefreshTokenModel} from "../model/refresh-token.model";
 import {IsDate} from "class-validator";
 
 export class RefreshTokenDto {

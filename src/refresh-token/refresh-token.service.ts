@@ -1,7 +1,7 @@
 import {Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {Op, UniqueConstraintError} from "sequelize";
-import {RefreshTokenModel} from "./model/refresh.token.model";
+import {RefreshTokenModel} from "./model/refresh-token.model";
 import {createHash} from "crypto";
 
 @Injectable()

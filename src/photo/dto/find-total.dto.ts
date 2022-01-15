@@ -1,7 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {Transform} from "class-transformer";
 import {ArrayMaxSize, ArrayUnique, IsEnum, IsInt, Max, Min} from "class-validator";
-import {DateColumn} from "../enum/date.column.enum";
+import {DateColumn} from "../enum/date-column.enum";
 
 export class FindTotalDto {
 

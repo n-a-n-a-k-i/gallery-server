@@ -3,27 +3,18 @@ import {InjectModel} from "@nestjs/sequelize";
 import {PhotoModel} from "./model/photo.model";
 import {Op, where, fn, col, WhereOptions} from "sequelize";
 import {FindDto} from "./dto/find.dto";
-import {FindTotalDto} from "./dto/find.total.dto";
-import {TotalDatePartDto} from "./dto/total.date.part.dto";
-import {UserService} from "../user/user.service";
-import {DatePart} from "./enum/date.part.enum";
-import {UtilityService} from "../utility/utility.service";
-import {DateColumn} from "./enum/date.column.enum";
-import {join} from 'path'
-import {OrderDirection} from "./enum/order.direction.enum";
+import {FindTotalDto} from "./dto/find-total.dto";
+import {TotalDatePartDto} from "./dto/total-date-part.dto";
+import {DatePart} from "./enum/date-part.enum";
+import {DateColumn} from "./enum/date-column.enum";
+import {OrderDirection} from "./enum/order-direction.enum";
 
 @Injectable()
 export class PhotoService {
 
     constructor(
-
         @InjectModel(PhotoModel)
-        private photoModel: typeof PhotoModel,
-
-        private userService: UserService,
-
-        private utilityService: UtilityService
-
+        private photoModel: typeof PhotoModel
     ) {}
 
     /**
@@ -50,12 +41,12 @@ export class PhotoService {
     }
 
     /**
-     * Скачивание файла фотографии
+     * Поиск даты изменения содержимого файла
      * @param id
      */
-    async download(id: string): Promise<string> {
+    async findMtime(id: string): Promise<Date> {
 
-        const {mtime} = await this.photoModel.findByPk(id, {
+        const photoModel: PhotoModel = await this.photoModel.findByPk(id, {
             attributes: {
                 exclude: [
                     'id',
@@ -74,13 +65,11 @@ export class PhotoService {
             }
         })
 
-        if (!mtime) {
+        if (!photoModel) {
             throw new NotFoundException('Фотография не найдена')
         }
 
-        const {cloudUsername, cloudPathSync} = await this.userService.findById(process.env.NEXTCLOUD_OWNER)
-
-        return this.getFullFilePath(id, mtime, cloudUsername, cloudPathSync)
+        return photoModel.mtime
 
     }
 
@@ -215,84 +204,6 @@ export class PhotoService {
         return {
             [Op.and]: conditions
         }
-
-    }
-
-    /**
-     * Название файла без расширения
-     * @param id
-     * @param mtime
-     */
-    getFileName(id: string, mtime: Date): string {
-
-        const {formatNumber} = this.utilityService
-
-        return process.env.NEXTCLOUD_FILE_NAME
-            .split('{year}').join(mtime.getFullYear().toString())
-            .split('{month}').join(formatNumber(mtime.getMonth() + 1, 2))
-            .split('{day}').join(formatNumber(mtime.getDate(), 2))
-            .split('{hours}').join(formatNumber(mtime.getHours(), 2))
-            .split('{minutes}').join(formatNumber(mtime.getMinutes(), 2))
-            .split('{seconds}').join(formatNumber(mtime.getSeconds(), 2))
-            .split('{id}').join(id)
-    }
-
-    /**
-     * Название файла
-     * @param id
-     * @param mtime
-     */
-    getFileBase(id: string, mtime: Date): string {
-
-        const fileName = this.getFileName(id, mtime)
-
-        return `${fileName}.${process.env.NEXTCLOUD_FILE_EXT}`
-
-    }
-
-    /**
-     * Название файла для миниатюры
-     * @param id
-     * @param mtime
-     */
-    getFileBaseThumbnail(id: string, mtime: Date): string {
-
-        const fileName = this.getFileName(id, mtime)
-
-        return `${fileName} thumbnail.${process.env.NEXTCLOUD_FILE_EXT}`
-
-    }
-
-    /**
-     * Название файла для предпросмотра
-     * @param id
-     * @param mtime
-     */
-    getFileBasePreview(id: string, mtime: Date): string {
-
-        const fileName = this.getFileName(id, mtime)
-
-        return `${fileName} preview.${process.env.NEXTCLOUD_FILE_EXT}`
-
-    }
-
-    /**
-     * Полный путь к файлу для скачивания
-     * @param id
-     * @param mtime
-     * @param cloudUsername
-     * @param cloudPathSync
-     */
-    getFullFilePath(id: string, mtime: Date, cloudUsername: string, cloudPathSync: string): string {
-
-        const fileBase = this.getFileBase(id, mtime)
-        const userPath = process.env.NEXTCLOUD_USER_PATH
-            .split('{username}').join(cloudUsername)
-            .split('{pathSync}').join(cloudPathSync)
-            .split('{year}').join(mtime.getFullYear().toString())
-            .split('{month}').join(this.utilityService.formatNumber(mtime.getMonth() + 1, 2))
-
-        return join(process.env.NEXTCLOUD_PATH, userPath, fileBase)
 
     }
 
