@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {PhotoModel} from "./model/photo.model";
 import {Op, where, fn, col, WhereOptions} from "sequelize";
@@ -8,6 +8,11 @@ import {TotalDatePartDto} from "./dto/total-date-part.dto";
 import {DatePart} from "./enum/date-part.enum";
 import {DateColumn} from "./enum/date-column.enum";
 import {OrderDirection} from "./enum/order-direction.enum";
+import {PathLike, Stats} from 'fs'
+import {readFile, stat} from 'fs/promises'
+import {createHash} from "crypto"
+import {PhotoCreateDto} from "./dto/photo-create.dto";
+import * as sharp from 'sharp'
 
 @Injectable()
 export class PhotoService {
@@ -16,6 +21,70 @@ export class PhotoService {
         @InjectModel(PhotoModel)
         private photoModel: typeof PhotoModel
     ) {}
+
+    /**
+     * Создание фотографии
+     * @param path
+     * @param user
+     */
+    async create(path: PathLike, user: string): Promise<PhotoModel> {
+
+        const file: Buffer = await readFile(path)
+        const algorithm: string = process.env.CRYPTO_PHOTO_HASH_ALGORITHM
+        const hash: string = createHash(algorithm).update(file).digest('hex')
+        const isExist = await this.isExistByHash(hash)
+
+        if (isExist) {
+            throw new BadRequestException(hash, 'Дубликат')
+        }
+
+        const photoCreateDto: PhotoCreateDto = new PhotoCreateDto()
+        const {atime, mtime, ctime, birthtime}: Stats = await stat(path)
+
+        photoCreateDto.user = user
+        photoCreateDto.hash = hash
+        photoCreateDto.thumbnail = await sharp(file).rotate().resize({
+            width: eval(process.env.PHOTO_THUMBNAIL_WIDTH),
+            height: eval(process.env.PHOTO_THUMBNAIL_HEIGHT),
+            fit: process.env.PHOTO_THUMBNAIL_FIT
+        }).toBuffer()
+        photoCreateDto.preview = await sharp(file).rotate().resize({
+            width: eval(process.env.PHOTO_PREVIEW_WIDTH),
+            height: eval(process.env.PHOTO_PREVIEW_HEIGHT),
+            fit: process.env.PHOTO_PREVIEW_FIT
+        }).toBuffer()
+        photoCreateDto.date = mtime
+        photoCreateDto.atime = atime
+        photoCreateDto.mtime = mtime
+        photoCreateDto.ctime = ctime
+        photoCreateDto.birthtime = birthtime
+
+        try {
+
+            return await this.photoModel.create(photoCreateDto, {
+                returning: [
+                    'id',
+                    'hash',
+                    // 'thumbnail',
+                    // 'preview',
+                    'user',
+                    'date',
+                    'atime',
+                    'mtime',
+                    'ctime',
+                    'birthtime',
+                    'createdAt',
+                    'updatedAt'
+                ]
+            })
+
+        } catch (error) {
+
+            throw new InternalServerErrorException(error, 'Ошибка при создании фотографии')
+
+        }
+
+    }
 
     /**
      * Поиск фотографий
@@ -37,6 +106,72 @@ export class PhotoService {
             limit,
             offset
         })
+
+    }
+
+    /**
+     * Поиск миниатюры
+     * @param id
+     */
+    async findThumbnail(id: string): Promise<PhotoModel> {
+
+        const photoModel: PhotoModel = await this.photoModel.findByPk(id, {
+            attributes: {
+                exclude: [
+                    'id',
+                    'hash',
+                    // 'thumbnail',
+                    'preview',
+                    'user',
+                    'date',
+                    'atime',
+                    // 'mtime',
+                    'ctime',
+                    'birthtime',
+                    'createdAt',
+                    'updatedAt'
+                ]
+            }
+        })
+
+        if (!photoModel) {
+            throw new NotFoundException('Фотография не найдена')
+        }
+
+        return photoModel
+
+    }
+
+    /**
+     * Поиск предпросмотра
+     * @param id
+     */
+    async findPreview(id: string): Promise<PhotoModel> {
+
+        const photoModel: PhotoModel = await this.photoModel.findByPk(id, {
+            attributes: {
+                exclude: [
+                    'id',
+                    'hash',
+                    'thumbnail',
+                    // 'preview',
+                    'user',
+                    'date',
+                    'atime',
+                    // 'mtime',
+                    'ctime',
+                    'birthtime',
+                    'createdAt',
+                    'updatedAt'
+                ]
+            }
+        })
+
+        if (!photoModel) {
+            throw new NotFoundException('Фотография не найдена')
+        }
+
+        return photoModel
 
     }
 
@@ -110,68 +245,32 @@ export class PhotoService {
     }
 
     /**
-     * Поиск миниатюры
-     * @param id
+     * Поиск наличия фотографии по хешу
+     * @param hash
      */
-    async findThumbnail(id: string): Promise<PhotoModel> {
+    async isExistByHash(hash: string): Promise<boolean> {
 
-        const photoModel: PhotoModel = await this.photoModel.findByPk(id, {
+        const photoModel: PhotoModel = await this.photoModel.findOne({
             attributes: {
                 exclude: [
                     'id',
-                    'hash',
-                    // 'thumbnail',
+                    // 'hash',
+                    'thumbnail',
                     'preview',
                     'user',
                     'date',
                     'atime',
-                    // 'mtime',
+                    'mtime',
                     'ctime',
                     'birthtime',
                     'createdAt',
                     'updatedAt'
                 ]
-            }
+            },
+            where: {hash}
         })
 
-        if (!photoModel) {
-            throw new NotFoundException('Фотография не найдена')
-        }
-
-        return photoModel
-
-    }
-
-    /**
-     * Поиск предпросмотра
-     * @param id
-     */
-    async findPreview(id: string): Promise<PhotoModel> {
-
-        const photoModel: PhotoModel = await this.photoModel.findByPk(id, {
-            attributes: {
-                exclude: [
-                    'id',
-                    'hash',
-                    'thumbnail',
-                    // 'preview',
-                    'user',
-                    'date',
-                    'atime',
-                    // 'mtime',
-                    'ctime',
-                    'birthtime',
-                    'createdAt',
-                    'updatedAt'
-                ]
-            }
-        })
-
-        if (!photoModel) {
-            throw new NotFoundException('Фотография не найдена')
-        }
-
-        return photoModel
+        return !!photoModel
 
     }
 

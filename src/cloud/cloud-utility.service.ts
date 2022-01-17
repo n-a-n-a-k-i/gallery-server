@@ -69,17 +69,40 @@ export class CloudUtilityService {
     }
 
     /**
+     * Пользовательский путь
+     * @param cloudUsername
+     * @param cloudPath
+     */
+    getUserPath(cloudUsername: string, cloudPath: string): string {
+
+        return process.env.NEXTCLOUD_USER_PATH
+            .split('{username}').join(cloudUsername)
+            .split('{path}').join(cloudPath)
+
+    }
+
+    /**
      * Полный пользовательский путь
      * @param cloudUsername
      * @param cloudPath
      */
     getFullUserPath(cloudUsername: string, cloudPath: string): string {
 
-        const userPath = process.env.NEXTCLOUD_USER_PATH
-            .split('{username}').join(cloudUsername)
-            .split('{path}').join(cloudPath)
+        const userPath = this.getUserPath(cloudUsername, cloudPath)
 
         return join(process.env.NEXTCLOUD_PATH, userPath)
+
+    }
+
+    /**
+     * Пользовательский путь синхронизации
+     * @param mtime
+     */
+    getUserPathSync(mtime: Date): string {
+
+        return process.env.NEXTCLOUD_USER_PATH_SYNC
+            .split('{year}').join(mtime.getFullYear().toString())
+            .split('{month}').join(this.utilityService.formatNumber(mtime.getMonth() + 1, 2))
 
     }
 
@@ -92,9 +115,7 @@ export class CloudUtilityService {
     getFullUserPathSync(cloudUsername: string, cloudPathSync: string, mtime: Date): string {
 
         const fullUserPath = this.getFullUserPath(cloudUsername, cloudPathSync)
-        const userPathSync = process.env.NEXTCLOUD_USER_PATH_SYNC
-            .split('{year}').join(mtime.getFullYear().toString())
-            .split('{month}').join(this.utilityService.formatNumber(mtime.getMonth() + 1, 2))
+        const userPathSync = this.getUserPathSync(mtime)
 
         return join(fullUserPath, userPathSync)
 
