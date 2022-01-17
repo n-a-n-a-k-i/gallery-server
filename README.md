@@ -32,6 +32,8 @@ PHOTO_PREVIEW_WIDTH=1024
 PHOTO_PREVIEW_HEIGHT=1024
 PHOTO_PREVIEW_FIT=inside
 
+CLOUD_SYNC=true
+
 NEXTCLOUD_OWNER=00000000-0000-0000-0000-000000000000
 NEXTCLOUD_WEBDAV=https://cloud.example.org/remote.php/dav
 NEXTCLOUD_PATH=/var/lib/docker/volumes/nextcloud_app/_data/data

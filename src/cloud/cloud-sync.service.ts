@@ -41,7 +41,7 @@ export class CloudSyncService {
     @Cron(CronExpression.EVERY_MINUTE)
     async cron(): Promise<void> {
 
-        if (!this.state || this.state.isSync) {
+        if (!eval(process.env.CLOUD_SYNC) || !this.state || this.state.isSync) {
             return
         }
 
