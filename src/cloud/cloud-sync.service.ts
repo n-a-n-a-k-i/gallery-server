@@ -16,7 +16,6 @@ import {UtilityService} from "../utility/utility.service";
 @Injectable()
 export class CloudSyncService {
 
-    public ownerUsername: string
     public state: SyncState
 
     constructor(
@@ -26,15 +25,10 @@ export class CloudSyncService {
         private photoService: PhotoService
     ) {
 
-        userService.findById(process.env.NEXTCLOUD_OWNER).then(({cloudUsername}) => {
-
-            this.ownerUsername = cloudUsername
-            this.state = {
-                isSync: false,
-                errors: []
-            }
-
-        })
+        this.state = {
+            isSync: false,
+            errors: []
+        }
 
     }
 
@@ -76,8 +70,8 @@ export class CloudSyncService {
                 try {
 
                     const {id, mtime} = await this.photoService.create(fullPath, userModel.id)
-                    const from = this.generateFrom(cloudPathScan, path)
-                    const to = this.generateTo(cloudPathSync, mtime, id)
+                    const from = this.generateFrom(cloudUsername, cloudPathScan, path)
+                    const to = this.generateTo(cloudUsername, cloudPathSync, mtime, id)
 
                     await this.move(webDAVClient, from, to)
 
@@ -101,15 +95,16 @@ export class CloudSyncService {
 
     /**
      * Откуда
+     * @param cloudUsername
      * @param cloudPathScan
      * @param path
      */
-    generateFrom(cloudPathScan: string, path: string): string {
+    generateFrom(cloudUsername: string, cloudPathScan: string, path: string): string {
 
         return this.utilityService.windowsToPOSIX(
             join(
                 'files',
-                this.ownerUsername,
+                cloudUsername,
                 cloudPathScan,
                 path
             )
@@ -119,16 +114,17 @@ export class CloudSyncService {
 
     /**
      * Куда
+     * @param cloudUsername
      * @param cloudPathSync
      * @param mtime
      * @param id
      */
-    generateTo(cloudPathSync: string, mtime: Date, id: string): string {
+    generateTo(cloudUsername: string, cloudPathSync: string, mtime: Date, id: string): string {
 
         return this.utilityService.windowsToPOSIX(
             join(
                 'files',
-                this.ownerUsername,
+                cloudUsername,
                 cloudPathSync,
                 this.cloudUtilityService.getUserPathSync(mtime),
                 this.cloudUtilityService.getFileBase(mtime, id)
