@@ -57,7 +57,12 @@ export class CloudSyncService {
             const userModel = userModels[i]
             const {cloudUsername, cloudPassword, cloudPathScan, cloudPathSync} = userModel
             const fullPathScan = this.cloudUtilityService.getFullUserPath(cloudUsername, cloudPathScan)
-            const entryInfos: EntryInfo[] = await readdirp.promise(fullPathScan)
+            const entryInfos: EntryInfo[] = await readdirp.promise(fullPathScan, {
+                fileFilter: [
+                    '*.jpg',
+                    '*.JPG'
+                ]
+            })
             const webDAVClient = createClient(process.env.NEXTCLOUD_WEBDAV, {
                 username: cloudUsername,
                 password: cloudPassword
