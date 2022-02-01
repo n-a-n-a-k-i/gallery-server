@@ -2,20 +2,17 @@ import {Module, ValidationPipe} from "@nestjs/common";
 import {SequelizeModule} from "@nestjs/sequelize";
 import {UserModule} from './user/user.module';
 import {ConfigModule} from "@nestjs/config";
-import {UserModel} from "./user/model/user.model";
 import {AccountModule} from './account/account.module';
 import {APP_GUARD, APP_PIPE} from "@nestjs/core";
 import {JwtAccessTokenGuard} from "./account/guard/jwt-access-token.guard";
-import {PermissionModel} from "./permission/model/permission.model";
-import {UserPermissionModel} from "./user/model/user-permission.model";
 import {PermissionGuard} from "./account/guard/permission.guard";
 import {PermissionModule} from './permission/permission.module';
-import {RefreshTokenModel} from "./refresh-token/model/refresh-token.model";
 import {RefreshTokenModule} from "./refresh-token/refresh-token.module";
 import { PhotoModule } from './photo/photo.module';
 import {ScheduleModule} from "@nestjs/schedule";
 import {CloudModule} from "./cloud/cloud.module";
 import {UtilityModule} from "./utility/utility.module";
+import {UserPermissionModule} from "./user-permission/user-permission.module";
 
 @Module({
     controllers: [],
@@ -49,12 +46,6 @@ import {UtilityModule} from "./utility/utility.module";
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
-            models: [
-                UserModel,
-                PermissionModel,
-                UserPermissionModel,
-                RefreshTokenModel
-            ],
             autoLoadModels: true
         }),
 
@@ -64,7 +55,9 @@ import {UtilityModule} from "./utility/utility.module";
         PhotoModule,
         RefreshTokenModule,
         UserModule,
+        UserPermissionModule,
         UtilityModule
+
     ]
 })
 export class AppModule {}

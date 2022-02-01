@@ -6,7 +6,9 @@ import {RefreshTokenModel} from "./model/refresh-token.model";
 @Module({
     providers: [RefreshTokenService],
     imports: [
-        SequelizeModule.forFeature([RefreshTokenModel])
+        SequelizeModule.forFeature([
+            RefreshTokenModel
+        ])
     ],
     exports: [RefreshTokenService]
 })

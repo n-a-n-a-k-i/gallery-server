@@ -10,7 +10,9 @@ import {CloudModule} from "../cloud/cloud.module";
     controllers: [PhotoController],
     providers: [PhotoService],
     imports: [
-        SequelizeModule.forFeature([PhotoModel]),
+        SequelizeModule.forFeature([
+            PhotoModel
+        ]),
         UserModule,
         CloudModule
     ],

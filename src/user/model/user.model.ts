@@ -3,7 +3,7 @@ import {BOOLEAN, DATE, literal, TEXT, UUID} from "sequelize";
 import {ApiProperty} from "@nestjs/swagger";
 import {UserCreateDto} from "../dto/user-create.dto";
 import {PermissionModel} from "../../permission/model/permission.model";
-import {UserPermissionModel} from "./user-permission.model";
+import {UserPermissionModel} from "../../user-permission/model/user-permission.model";
 import {RefreshTokenModel} from "../../refresh-token/model/refresh-token.model";
 
 @Table({comment: 'Пользователь', tableName: 'user'})

@@ -2,7 +2,7 @@ import {BelongsToMany, Column, Model, Table} from "sequelize-typescript";
 import {ApiProperty} from "@nestjs/swagger";
 import {literal, TEXT, UUID} from "sequelize";
 import {UserModel} from "../../user/model/user.model";
-import {UserPermissionModel} from "../../user/model/user-permission.model";
+import {UserPermissionModel} from "../../user-permission/model/user-permission.model";
 import {Permission} from "../enum/permission.enum";
 
 @Table({comment: 'Разрешение', tableName: 'permission'})
