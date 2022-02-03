@@ -2,9 +2,10 @@ import {BelongsTo, Column, ForeignKey, Model, Table} from "sequelize-typescript"
 import {BLOB, DATE, literal, TEXT, UUID} from "sequelize";
 import {ApiProperty} from "@nestjs/swagger";
 import {UserModel} from "../../user/model/user.model";
+import {PhotoCreateDto} from "../dto/photo-create.dto";
 
-@Table({comment: 'Фотография', tableName: 'photo'})
-export class PhotoModel extends Model {
+@Table({comment: 'Фотография', tableName: 'photo', paranoid: true})
+export class PhotoModel extends Model<PhotoModel, PhotoCreateDto> {
 
     @ApiProperty({
         description: 'Идентификатор',

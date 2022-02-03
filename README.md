@@ -122,3 +122,31 @@ pm.sendRequest(`${server}/account/sign-out`, (error, response) => {
 ```js
 pm.collectionVariables.unset('accessToken')
 ```
+
+## Подсказки
+
+Проверка на неиспользуемые зависимости:
+
+```shell
+npm install -g depcheck
+depcheck
+
+npx depcheck
+
+npm install -g depcheck typescript
+```
+
+Поиск новых релизов пакетов:
+
+```shell
+npm outdated
+```
+
+Обновление пакетов:
+
+```shell
+npm install -g npm-check-updates
+ncu -u
+
+npm update
+```

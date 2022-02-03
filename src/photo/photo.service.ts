@@ -74,7 +74,8 @@ export class PhotoService {
                     'ctime',
                     'birthtime',
                     'createdAt',
-                    'updatedAt'
+                    'updatedAt',
+                    'deletedAt'
                 ]
             })
 
@@ -129,7 +130,8 @@ export class PhotoService {
                     'ctime',
                     'birthtime',
                     'createdAt',
-                    'updatedAt'
+                    'updatedAt',
+                    'deletedAt'
                 ]
             }
         })
@@ -162,7 +164,8 @@ export class PhotoService {
                     'ctime',
                     'birthtime',
                     'createdAt',
-                    'updatedAt'
+                    'updatedAt',
+                    'deletedAt'
                 ]
             }
         })
@@ -195,7 +198,8 @@ export class PhotoService {
                     'ctime',
                     'birthtime',
                     'createdAt',
-                    'updatedAt'
+                    'updatedAt',
+                    'deletedAt'
                 ]
             }
         })
@@ -264,7 +268,8 @@ export class PhotoService {
                     'ctime',
                     'birthtime',
                     'createdAt',
-                    'updatedAt'
+                    'updatedAt',
+                    'deletedAt'
                 ]
             },
             where: {hash}

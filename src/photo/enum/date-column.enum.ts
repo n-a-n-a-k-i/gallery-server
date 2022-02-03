@@ -5,5 +5,6 @@ export enum DateColumn {
     ctime = 'ctime',
     birthtime = 'birthtime',
     createdAt = 'createdAt',
-    updatedAt = 'updatedAt'
+    updatedAt = 'updatedAt',
+    deletedAt = 'deletedAt'
 }

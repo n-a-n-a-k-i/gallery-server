@@ -4,7 +4,7 @@ import {DATE, literal, TEXT, UUID} from "sequelize";
 import {UserModel} from "../../user/model/user.model";
 
 @Table({comment: 'Токен обновления', tableName: 'refresh_token'})
-export class RefreshTokenModel extends Model {
+export class RefreshTokenModel extends Model<RefreshTokenModel> {
 
     @ApiProperty({
         description: 'Идентификатор',
