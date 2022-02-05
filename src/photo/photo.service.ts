@@ -249,6 +249,18 @@ export class PhotoService {
     }
 
     /**
+     * Удаление фотографии
+     * @param id
+     */
+    async remove(id: string): Promise<void> {
+
+        await this.photoModel.destroy({
+            where: {id}
+        })
+
+    }
+
+    /**
      * Поиск наличия фотографии по хешу
      * @param hash
      */

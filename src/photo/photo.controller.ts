@@ -1,4 +1,4 @@
-import {Controller, Get, Param, ParseEnumPipe, ParseUUIDPipe, Query, Res, StreamableFile} from '@nestjs/common';
+import {Controller, Delete, Get, Param, ParseEnumPipe, ParseUUIDPipe, Query, Res, StreamableFile} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {PhotoService} from "./photo.service";
 import {FindDto} from "./dto/find.dto";
@@ -119,6 +119,18 @@ export class PhotoController {
         response.setHeader('Content-Disposition', `inline; filename="${fileBasePreview}"`)
 
         return new StreamableFile(preview)
+
+    }
+
+    @ApiOperation({summary: 'Удаление фотографии'})
+    @ApiResponse({type: undefined})
+    @ApiBearerAuth('accessToken')
+    @Delete('/:id')
+    async remove(
+        @Param('id', new ParseUUIDPipe({version: '4'})) id: string
+    ): Promise<void> {
+
+        await this.photoService.remove(id)
 
     }
 
