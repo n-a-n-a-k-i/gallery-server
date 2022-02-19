@@ -10,6 +10,7 @@ export class UserDto {
         this.id = userModel.id
         this.username = userModel.username
         this.isSync = userModel.isSync
+        this.isClear = userModel.isClear
 
         this.cloudUsername = userModel.cloudUsername
         this.cloudPathScan = userModel.cloudPathScan
@@ -51,6 +52,15 @@ export class UserDto {
     @IsOptional()
     @IsBoolean()
     readonly isSync: boolean
+
+    @ApiProperty({
+        description: 'Состояние очистки',
+        example: false,
+        required: false
+    })
+    @IsOptional()
+    @IsBoolean()
+    readonly isClear: boolean
 
     @ApiProperty({
         description: 'Облако - имя пользователя',

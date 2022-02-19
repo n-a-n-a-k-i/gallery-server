@@ -22,7 +22,7 @@ export class RefreshTokenService {
     async create(user: string, refreshToken: string, host: string, userAgent: string): Promise<RefreshTokenModel> {
 
         const value = this.hashRefreshToken(refreshToken)
-        const expiredAt = this.generateExpiredAt()
+        const expiredAt = this.getExpiredAt()
 
         try {
 
@@ -82,7 +82,7 @@ export class RefreshTokenService {
         }
 
         refreshTokenModel.value = this.hashRefreshToken(refreshToken)
-        refreshTokenModel.expiredAt = this.generateExpiredAt()
+        refreshTokenModel.expiredAt = this.getExpiredAt()
         refreshTokenModel.host = host
         refreshTokenModel.userAgent = userAgent
 
@@ -126,7 +126,7 @@ export class RefreshTokenService {
     /**
      * Генерация даты истекания срока действия
      */
-    generateExpiredAt(): Date {
+    getExpiredAt(): Date {
 
         const expiresIn: number = eval(process.env.JWT_REFRESH_TOKEN_EXPIRES_IN)
         const expiredAt = Date.now() + expiresIn

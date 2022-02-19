@@ -32,7 +32,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
             throw new UnauthorizedException('Неверное имя пользователя или пароль')
         }
 
-        return this.accountService.generateUser(userModel)
+        return this.accountService.getUser(userModel)
 
     }
 

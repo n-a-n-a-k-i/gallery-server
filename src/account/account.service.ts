@@ -23,7 +23,7 @@ export class AccountService {
      */
     async signIn(user: User, host: string, userAgent: string): Promise<Token> {
 
-        const token = this.generateToken(user)
+        const token = this.getToken(user)
 
         await this.refreshTokenService.create(user.id, token.refreshToken, host, userAgent)
 
@@ -41,8 +41,8 @@ export class AccountService {
     async refresh(id: string, refreshToken: string, host: string, userAgent: string): Promise<Token> {
 
         const userModel = await this.userService.findById(id)
-        const user = this.generateUser(userModel)
-        const token = this.generateToken(user)
+        const user = this.getUser(userModel)
+        const token = this.getToken(user)
 
         await this.refreshTokenService.updateRefreshToken(refreshToken, token.refreshToken, host, userAgent)
 
@@ -65,7 +65,7 @@ export class AccountService {
      * Генерация пользователя
      * @param userModel
      */
-    generateUser(userModel: UserModel): User {
+    getUser(userModel: UserModel): User {
         return {
             id: userModel.id,
             permissions: userModel.permissions.map(permission => permission.value)
@@ -76,7 +76,7 @@ export class AccountService {
      * Генерация токенов
      * @param user
      */
-    generateToken(user: User): Token {
+    getToken(user: User): Token {
 
         const accessToken = this.jwtService.sign(user, {
             secret: process.env.JWT_ACCESS_TOKEN_SECRET,

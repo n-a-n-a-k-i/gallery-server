@@ -73,6 +73,29 @@ export class UserService {
     }
 
     /**
+     * Поиск пользователей для очистки
+     */
+    async findClear(): Promise<UserModel[]> {
+        return await this.userModel.findAll({
+            where: {
+                isClear: true,
+                cloudUsername: {
+                    [Op.not]: null
+                },
+                cloudPassword: {
+                    [Op.not]: null
+                },
+                cloudPathScan: {
+                    [Op.not]: null
+                },
+                cloudPathSync: {
+                    [Op.not]: null
+                }
+            }
+        })
+    }
+
+    /**
      * Поиск пользователя по идентификатору
      * @param id
      */

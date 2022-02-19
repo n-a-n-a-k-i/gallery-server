@@ -30,6 +30,15 @@ export class UserCreateDto {
     readonly isSync: boolean
 
     @ApiProperty({
+        description: 'Состояние очистки',
+        example: false,
+        required: false
+    })
+    @IsOptional()
+    @IsBoolean()
+    readonly isClear: boolean
+
+    @ApiProperty({
         description: 'Облако - имя пользователя',
         example: 'user',
         required: false

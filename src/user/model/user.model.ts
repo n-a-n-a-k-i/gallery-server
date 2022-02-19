@@ -60,6 +60,17 @@ export class UserModel extends Model<UserModel, UserCreateDto> {
     isSync: boolean
 
     @ApiProperty({
+        description: 'Состояние очистки',
+        example: false,
+        required: false
+    })
+    @Column({
+        comment: 'Состояние очистки',
+        type: BOOLEAN
+    })
+    isClear: boolean
+
+    @ApiProperty({
         description: 'Облако - имя пользователя',
         example: 'user',
         required: false

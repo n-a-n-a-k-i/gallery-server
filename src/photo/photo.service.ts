@@ -111,6 +111,27 @@ export class PhotoService {
     }
 
     /**
+     * Поиск удалённых фотографий по пользователю
+     * @param user
+     */
+    async findDeleted(user: string): Promise<PhotoModel[]> {
+
+        return await this.photoModel.findAll({
+            paranoid: false,
+            attributes: {
+                exclude: ['thumbnail', 'preview']
+            },
+            where: {
+                user,
+                deletedAt: {
+                    [Op.not]: null
+                }
+            }
+        })
+
+    }
+
+    /**
      * Поиск миниатюры
      * @param id
      */
@@ -251,11 +272,13 @@ export class PhotoService {
     /**
      * Удаление фотографии
      * @param id
+     * @param force
      */
-    async remove(id: string): Promise<void> {
+    async remove(id: string, force: boolean = false): Promise<void> {
 
         await this.photoModel.destroy({
-            where: {id}
+            where: {id},
+            force
         })
 
     }
