@@ -1,6 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {PhotoModel} from "../model/photo.model";
-import {IsDate} from "class-validator";
+import {IsDate, IsOptional} from "class-validator";
 
 export class PhotoDto {
 
@@ -17,6 +17,7 @@ export class PhotoDto {
 
         this.createdAt = photoModel.createdAt
         this.updatedAt = photoModel.updatedAt
+        this.deletedAt = photoModel.deletedAt
 
     }
 
@@ -80,5 +81,13 @@ export class PhotoDto {
     })
     @IsDate()
     readonly updatedAt: Date
+
+    @ApiProperty({
+        description: 'Дата удаления',
+        format: 'date-time'
+    })
+    @IsOptional()
+    @IsDate()
+    readonly deletedAt: Date | null
 
 }
