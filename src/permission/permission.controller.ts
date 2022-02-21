@@ -13,8 +13,8 @@ export class PermissionController {
     @ApiResponse({type: [PermissionDto]})
     @ApiBearerAuth('accessToken')
     @Get()
-    async findAll(): Promise<PermissionDto[]> {
-        const permissionModels = await this.permissionService.findAll()
+    async find(): Promise<PermissionDto[]> {
+        const permissionModels = await this.permissionService.find()
         return permissionModels.map(permissionModel => new PermissionDto(permissionModel))
     }
 

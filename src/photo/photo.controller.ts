@@ -39,6 +39,7 @@ export class PhotoController {
     }
 
     @ApiOperation({summary: 'Скачивание файла фотографии'})
+    @ApiResponse({type: StreamableFile})
     @ApiBearerAuth('accessToken')
     @Get('/download/:id')
     async download(
@@ -89,6 +90,8 @@ export class PhotoController {
     }
 
     @ApiOperation({summary: 'Поиск миниатюры'})
+    @ApiResponse({type: StreamableFile})
+    @ApiBearerAuth('accessToken')
     @Get('/thumbnail/:id')
     async findThumbnail(
         @Res({passthrough: true}) response: Response,
@@ -106,6 +109,8 @@ export class PhotoController {
     }
 
     @ApiOperation({summary: 'Поиск предпросмотра'})
+    @ApiResponse({type: StreamableFile})
+    @ApiBearerAuth('accessToken')
     @Get('/preview/:id')
     async findPreview(
         @Res({passthrough: true}) response: Response,

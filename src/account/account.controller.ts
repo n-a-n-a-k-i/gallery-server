@@ -1,4 +1,17 @@
-import {Controller, Get, Headers, HttpCode, Post, Req, Res, UseGuards} from "@nestjs/common";
+import {
+    BadRequestException,
+    Controller,
+    Get,
+    Headers,
+    HttpCode,
+    Post,
+    Req,
+    Res,
+    StreamableFile,
+    UploadedFile,
+    UseGuards,
+    UseInterceptors
+} from "@nestjs/common";
 import {LocalGuard} from "./guard/local.guard";
 import {AccountService} from "./account.service";
 import {Public} from "./decorator/public.decorator";
@@ -15,6 +28,8 @@ import {User} from "./interface/user.interface";
 import {RefreshTokenDto} from "../refresh-token/dto/refresh-token.dto";
 import {RefreshTokenService} from "../refresh-token/refresh-token.service";
 import {UserService} from "../user/user.service";
+import {FileInterceptor} from "@nestjs/platform-express";
+import Buffer from "buffer";
 
 @ApiTags('Аккаунт')
 @Controller('account')
@@ -23,7 +38,7 @@ export class AccountController {
     constructor(
         private accountService: AccountService,
         private userService: UserService,
-        private refreshTokenService :RefreshTokenService
+        private refreshTokenService: RefreshTokenService
     ) {}
 
     @ApiOperation({summary: 'Пользователь из запроса'})
@@ -117,6 +132,66 @@ export class AccountController {
         response.clearCookie('accessToken', {path: '/photo/preview'})
         response.clearCookie('refreshToken', {path: '/account/refresh'})
         response.clearCookie('refreshToken', {path: '/account/sign-out'})
+
+    }
+
+    @ApiOperation({summary: 'Обновить аватар'})
+    @ApiResponse({type: StreamableFile})
+    @ApiBearerAuth('accessToken')
+    @Post('/avatar')
+    @UseInterceptors(FileInterceptor('file', {
+        fileFilter(req, file, callback) {
+
+            const mimeTypes = [
+                'image/gif',
+                'image/jpeg',
+                'image/png'
+            ]
+
+            if (!mimeTypes.includes(file.mimetype)) {
+                return callback(
+                    new BadRequestException(
+                        `Поддерживаемые форматы изображений: ${mimeTypes.join(', ')}`,
+                        `Формат файла не поддерживается: ${file.mimetype}`
+                    ),
+                    false
+                )
+            }
+
+            callback(null, true)
+
+        }
+    }))
+    async updateAvatar(
+        @Req() request: RequestWithUser,
+        @Res({passthrough: true}) response: Response,
+        @UploadedFile() file: Express.Multer.File
+    ): Promise<StreamableFile> {
+
+        const avatar: Buffer = await this.userService.updateAvatar(request.user.id, file.buffer)
+
+        response.contentType('image/jpeg')
+        response.setHeader('Content-Disposition', `inline; filename="${request.user.id}.jpg"`)
+
+        return new StreamableFile(avatar)
+
+    }
+
+    @ApiOperation({summary: 'Поиск аватара'})
+    @ApiResponse({type: StreamableFile})
+    @ApiBearerAuth('accessToken')
+    @Get('/avatar')
+    async findAvatar(
+        @Req() request: RequestWithUser,
+        @Res({passthrough: true}) response: Response
+    ): Promise<StreamableFile> {
+
+        const avatar: Buffer = await this.userService.findAvatar(request.user.id)
+
+        response.contentType('image/jpeg')
+        response.setHeader('Content-Disposition', `inline; filename="${request.user.id}.jpg"`)
+
+        return new StreamableFile(avatar)
 
     }
 

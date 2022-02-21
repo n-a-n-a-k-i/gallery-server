@@ -1,5 +1,5 @@
 import {BelongsToMany, Column, HasMany, Model, Table} from "sequelize-typescript";
-import {BOOLEAN, DATE, literal, TEXT, UUID} from "sequelize";
+import {BLOB, BOOLEAN, DATE, literal, TEXT, UUID} from "sequelize";
 import {ApiProperty} from "@nestjs/swagger";
 import {UserCreateDto} from "../dto/user-create.dto";
 import {PermissionModel} from "../../permission/model/permission.model";
@@ -47,6 +47,16 @@ export class UserModel extends Model<UserModel, UserCreateDto> {
         allowNull: false
     })
     password: string
+
+    @ApiProperty({
+        description: 'Аватар',
+        format: 'bytea'
+    })
+    @Column({
+        comment: 'Аватар',
+        type: BLOB
+    })
+    avatar: Buffer
 
     @ApiProperty({
         description: 'Состояние синхронизации',

@@ -13,7 +13,7 @@ export class PermissionService {
     /**
      * Поиск разрешений
      */
-    async findAll(): Promise<PermissionModel[]> {
+    async find(): Promise<PermissionModel[]> {
         return await this.permissionModel.findAll()
     }
 
